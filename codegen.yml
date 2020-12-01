@@ -1,0 +1,11 @@
+overwrite: true
+schema: "https://ounjey.vercel.app/graphql"
+documents: "./src/**/*.graphql"
+generates:
+    ./src/graphql/types.tsx:
+        config:
+            withHooks: true
+        plugins:
+            - typescript
+            - typescript-operations
+            - typescript-urql

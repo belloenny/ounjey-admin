@@ -1,0 +1,41 @@
+query Caterer {
+    caterer {
+        user_id
+        business_name
+        business_email
+        business_phone
+        cover_image
+    }
+}
+
+query MenuItems {
+    caterer {
+        menu_items {
+            id
+            title
+            images {
+                id
+                src
+            }
+            description
+            price_per_plate
+            minimum_quantity
+            single_serves
+            minimum_quantity
+            maximum_quantity
+            menu_options {
+                id
+                title
+                maximum_choice
+                minimum_choice
+                menu_choices {
+                    id
+                    name
+                    description
+                    choice_price
+                    use_checkboxes
+                }
+            }
+        }
+    }
+}
