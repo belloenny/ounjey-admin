@@ -1,16 +1,15 @@
+import axios from 'axios'
 import React from "react"
-import { Redirect } from "react-router-dom"
+import {Redirect} from "react-router-dom"
 import {
-    CatererQuery,
-    useCatererQuery,
-    useLoginMutation,
-    useSignUpCatererMutation,
-} from "../graphql/types"
+    CatererProfile,
 
+    useCatererQuery
+} from "../graphql/types"
 type AuthProps = {
     isAuthenticated: boolean
     errorMessage: string
-    userData: CatererQuery
+    userData: CatererProfile
     login: Function
     signup: Function
     signout: Function
@@ -20,11 +19,9 @@ export const AuthContext = React.createContext({} as AuthProps)
 
 const AuthProvider = (props: any) => {
     const [response] = useCatererQuery()
-    const [, loginUser] = useLoginMutation()
     const [errorMessage, setErrorMessage] = React.useState("")
-    const [userData, setUserData] = React.useState<CatererQuery | null>(null)
-    const [, signUpCaterer] = useSignUpCatererMutation()
-    const { data, fetching, error } = response
+    const [userData, setUserData] = React.useState<CatererProfile | null>(null)
+    const {data, fetching, error} = response
     const [isAuthenticated, makeAuthenticated] = React.useState(false)
 
     React.useEffect(() => {
@@ -32,7 +29,8 @@ const AuthProvider = (props: any) => {
             makeAuthenticated(false)
         } else {
             makeAuthenticated(true)
-            setUserData(data)
+            //@ts-ignore
+            setUserData(data.caterer)
         }
         if (Boolean(errorMessage)) {
             setErrorMessage("")
@@ -40,60 +38,58 @@ const AuthProvider = (props: any) => {
     }, [fetching, data, error, errorMessage])
 
     const login = React.useCallback(
-        async ({ email, password }, cb) => {
-            const res = await loginUser({ email, password })
-            if (!res.data.login || res.error) {
+        async ({email, password}, cb) => {
+            const {data} = await axios.post(`${process.env.REACT_APP_API_URL}/login`, {email, password})
+            if (!data) {
                 makeAuthenticated(false)
-                setErrorMessage(res.error.message)
+                setErrorMessage("SomeThing Went Wrong")
             } else {
-                localStorage.setItem("auth_token", res.data.login.token)
+                localStorage.setItem("auth_token", data.data.token)
                 makeAuthenticated(true)
-                setUserData(data)
+                setUserData(data.data.catererProfile)
                 setTimeout(cb, 1000) // fake async
             }
         },
-        [data, loginUser]
+        [data]
     )
 
     const signup = React.useCallback(
         async (
             {
-                business_email,
+                businessEmail,
                 password,
-                first_name,
-                last_name,
-                business_phone,
-                tag_line,
-                business_name,
+                firstName,
+                lastName,
+                businessPhone,
+                tagLine,
+                businessName,
             },
             cb
         ) => {
-            const res = await signUpCaterer({
-                business_email,
+            const {data} = await axios.post(`${process.env.REACT_APP_API_URL}/registercaterer`, {
+                businessEmail,
                 password,
-                first_name,
-                last_name,
-                business_phone,
-                tag_line,
-                business_name,
+                firstName,
+                lastName,
+                businessPhone,
+                tagLine,
+                businessName,
+                cuisines: ["test", "chinese"]
             })
-            if (!res.data.signupCaterer || res.error) {
+            if (!data) {
                 makeAuthenticated(false)
-                setErrorMessage(res.error.message)
+                setErrorMessage("Something Went Wrong")
             } else {
-                localStorage.setItem("auth_token", res.data.signupCaterer.token)
-                makeAuthenticated(true)
-                setUserData(data)
                 setTimeout(cb, 1000) // fake async
             }
         },
-        [data, signUpCaterer]
+        [data]
     )
 
     function signout(cb) {
         makeAuthenticated(false)
         localStorage.removeItem("auth_token")
-        return <Redirect to={{ pathname: "/login" }} />
+        return <Redirect to={{pathname: "/login"}} />
     }
     return (
         <AuthContext.Provider

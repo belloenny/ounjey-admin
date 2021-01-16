@@ -1,54 +1,43 @@
-import React, { useCallback } from "react"
-import { Scrollbars } from "react-custom-scrollbars"
-import { useForm } from "react-hook-form"
-import Button, { KIND } from "../../components/Button/Button"
-import DrawerBox from "../../components/DrawerBox/DrawerBox"
-import { Col, Row } from "../../components/FlexBox/FlexBox"
-import { FormFields, FormLabel } from "../../components/FormFields/FormFields"
-import Input from "../../components/Input/Input"
-import { AuthContext } from "../../context/auth"
-import { useDrawerDispatch } from "../../context/DrawerContext"
-import { useCreateMenuMutation } from "../../graphql/types"
+import React, {useCallback} from "react"
+import {useForm} from "react-hook-form"
+import {AuthContext} from "../../context/auth"
+import {useDrawerDispatch} from "../../context/DrawerContext"
 import {
-    ButtonGroup,
     DrawerTitle,
-    DrawerTitleWrapper,
-    FieldDetails,
-    Form,
+    DrawerTitleWrapper
 } from "../DrawerItems/DrawerItems.style"
 
 const options = [
-    { value: "grocery", name: "Grocery", id: "1" },
-    { value: "women-cloths", name: "Women Cloths", id: "2" },
-    { value: "bags", name: "Bags", id: "3" },
-    { value: "makeup", name: "Makeup", id: "4" },
+    {value: "grocery", name: "Grocery", id: "1"},
+    {value: "women-cloths", name: "Women Cloths", id: "2"},
+    {value: "bags", name: "Bags", id: "3"},
+    {value: "makeup", name: "Makeup", id: "4"},
 ]
 type Props = any
 
 const AddCategory: React.FC<Props> = (props) => {
     const dispatch = useDrawerDispatch()
-    const closeDrawer = useCallback(() => dispatch({ type: "CLOSE_DRAWER" }), [
+    const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
 
-    const { register, handleSubmit } = useForm()
+    const {register, handleSubmit} = useForm()
     // const [category, setCategory] = useState([])
-    const { userData } = React.useContext(AuthContext)
-    const [, createMenu] = useCreateMenuMutation()
+    const {userData} = React.useContext(AuthContext)
     React.useEffect(() => {
-        register({ name: "parent" })
-        register({ name: "path" })
+        register({name: "parent"})
+        register({name: "path"})
     }, [register])
 
-    const onSubmit = async ({ name }) => {
-        const res = await createMenu({
-            title: name,
-            user_id: userData.caterer.user_id,
-        })
-        if (!res.data || res.error) {
-        }
-        closeDrawer()
-    }
+    // const onSubmit = async ({ name }) => {
+    //     const res = await createMenu({
+    //         title: name,
+    //         user_id: userData.caterer.user_id,
+    //     })
+    //     if (!res.data || res.error) {
+    //     }
+    //     closeDrawer()
+    // }
     // const handleChange = ({ value }) => {
     //     setValue("parent", value)
     //     setCategory(value)
@@ -63,7 +52,7 @@ const AddCategory: React.FC<Props> = (props) => {
                 <DrawerTitle>Add Category</DrawerTitle>
             </DrawerTitleWrapper>
 
-            <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
+            {/* <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
                 <Scrollbars
                     autoHide
                     renderView={(props) => (
@@ -80,7 +69,7 @@ const AddCategory: React.FC<Props> = (props) => {
                         />
                     )}
                 >
-                    {/* <Row>
+                    <Row>
                         <Col lg={4}>
                             <FieldDetails>Upload Menu Image</FieldDetails>
                         </Col>
@@ -104,7 +93,7 @@ const AddCategory: React.FC<Props> = (props) => {
                                 <Uploader onChange={handleUploader} />
                             </DrawerBox>
                         </Col>
-                    </Row> */}
+                    </Row>
                     <Row>
                         <Col lg={4}>
                             <FieldDetails>
@@ -167,7 +156,7 @@ const AddCategory: React.FC<Props> = (props) => {
                         Create Category
                     </Button>
                 </ButtonGroup>
-            </Form>
+            </Form> */}
         </>
     )
 }

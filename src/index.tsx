@@ -12,12 +12,15 @@ import {theme} from "./theme"
 import "./theme/global.css"
 
 const client = createClient({
-    url: process.env.REACT_APP_API_URL,
+    url: process.env.REACT_APP_API_URL_GRAPHQL,
     exchanges: [devtoolsExchange, ...defaultExchanges],
     fetchOptions: () => {
         const token = localStorage.getItem("auth_token")
+
         return {
-            headers: {authorization: token ? `Bearer ${token}` : ""}
+            headers: {
+                authorization: token ? `Bearer ${token}` : ""
+            }
         }
     },
 

@@ -1,3 +1,4 @@
+import {toaster, ToasterContainer} from "baseui/toast"
 import {Field, Form, Formik} from "formik"
 import React, {useContext} from "react"
 import {Redirect, useHistory, useLocation} from "react-router-dom"
@@ -56,16 +57,23 @@ export default () => {
         } = data
         signup(
             {
-                business_email,
+                businessEmail: business_email,
                 password,
-                first_name,
-                last_name,
-                business_phone,
-                tag_line,
-                business_name,
+                firstName: first_name,
+                lastName: last_name,
+                businessPhone: business_phone,
+                tagLine: tag_line,
+                businessName: business_name,
+
             },
             () => {
-                history.replace(from)
+                toaster.positive(<>Check Your Inbox with email ${business_email} To Verify Your Email </>, {
+                    overrides: {
+                        InnerContainer: {
+                            style: {width: "100%"},
+                        },
+                    },
+                })
             }
         )
         setTimeout(() => setSubmitting(false), 400)
@@ -196,6 +204,7 @@ export default () => {
                     validationSchema={getLoginValidationSchema}
                 />
             </FormWrapper>
+            <ToasterContainer />
         </Wrapper>
     )
 }

@@ -1,40 +1,67 @@
 query Caterer {
     caterer {
-        user_id
-        business_name
-        business_email
-        business_phone
-        cover_image
+       id
+        isApproved
+        subaccount {
+            id
+            subaccount_id
+        }
+        businessPhone
+        businessEmail
+        businessName
+        deliveryFee
+        coverImage
+        cuisines
+        tagLine
+        createdAt
+        updatedAt
     }
+
 }
 
 query MenuItems {
-    caterer {
-        menu_items {
+       caterer {
+        menuItems{
             id
             title
-            images {
-                id
-                src
-            }
             description
-            price_per_plate
-            minimum_quantity
-            single_serves
-            minimum_quantity
-            maximum_quantity
-            menu_options {
+            pricePerPlate
+            maximumOrderQty
+            minimumOrderQty
+            singleServes
+            vegetarian_option
+            menuOptions {
                 id
                 title
-                maximum_choice
-                minimum_choice
-                menu_choices {
+                description
+                useCheckBoxes
+                maximumChoice
+                menuChoices {
                     id
+                    choicePrice
                     name
                     description
-                    choice_price
-                    use_checkboxes
                 }
+            }
+        }
+
+    }
+}
+
+query MenuCategories {
+    caterer {
+        menuCategories {
+            id
+            title
+            menuItems{
+                id
+                title
+                description
+                pricePerPlate
+                maximumOrderQty
+                minimumOrderQty
+                singleServes
+                vegetarian_option
             }
         }
     }

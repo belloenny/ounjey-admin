@@ -1,20 +1,11 @@
 import {styled, withStyle} from "baseui"
 import React, {useState} from "react"
-import Fade from "react-reveal/Fade"
-import Button from "../../components/Button/Button"
 import {
     Col as Column,
     Grid,
     Row as Rows
 } from "../../components/FlexBox/FlexBox"
-import Input from "../../components/Input/Input"
-import NoResult from "../../components/NoResult/NoResult"
-import Placeholder from "../../components/Placeholder/Placeholder"
-import ProductCard from "../../components/ProductCard/ProductCard"
-import Select from "../../components/Select/Select"
-import {Header, Heading} from "../../components/WrapperStyle"
 import {useMenuItemsQuery} from "../../graphql/types"
-import {CURRENCY} from "../../settings/constants"
 
 export const ProductsRow = styled("div", ({$theme}) => ({
     display: "flex",
@@ -108,7 +99,7 @@ export default function Products() {
 
     return (
         <Grid fluid={true}>
-            <Row>
+            {/* <Row>
                 <Col md={12}>
                     <Header style={{marginBottom: 15}}>
                         <Col md={2} xs={12}>
@@ -214,7 +205,7 @@ export default function Products() {
                         </Row>
                     )}
                 </Col>
-            </Row>
+            </Row> */}
         </Grid>
     )
 }

@@ -1,63 +1,53 @@
-import { Checkbox, LABEL_PLACEMENT } from "baseui/checkbox"
-import { TYPE } from "baseui/select"
-import { toaster, ToasterContainer } from "baseui/toast"
-import _ from "lodash"
-import React, { useCallback, useState } from "react"
-import { Scrollbars } from "react-custom-scrollbars"
-import { useForm } from "react-hook-form"
-import Button, { KIND } from "../../components/Button/Button"
+import {Checkbox, LABEL_PLACEMENT} from "baseui/checkbox"
+import {Input} from "baseui/input"
+import {Textarea} from "baseui/textarea"
+import {ToasterContainer} from "baseui/toast"
+import React, {useCallback, useState} from "react"
+import {Scrollbars} from "react-custom-scrollbars"
+import {Col, Row} from "react-flexbox-grid"
+import {useForm} from "react-hook-form"
+import Button, {KIND} from "../../components/Button/Button"
 import DrawerBox from "../../components/DrawerBox/DrawerBox"
-import { Col, Row } from "../../components/FlexBox/FlexBox"
-import {
-    Error,
-    FormFields,
-    FormLabel,
-} from "../../components/FormFields/FormFields"
-import Input from "../../components/Input/Input"
-import Select from "../../components/Select/Select"
-import { Textarea } from "../../components/Textarea/Textarea"
+import {Error, FormFields, FormLabel} from "../../components/FormFields/FormFields"
 import Uploader from "../../components/Uploader/Uploader"
-import { useDrawerDispatch } from "../../context/DrawerContext"
-import { useMenuState } from "../../context/MenuContext"
-import {
-    MenuOption,
-    MenuOptionCreateWithoutMenu_ItemInput,
-    useCreateMenuItemMutation,
-    useCreateMenuItemWithMenuOptionsMutation,
-} from "../../graphql/types"
+import {useDrawerDispatch} from "../../context/DrawerContext"
+import {useMenuState} from "../../context/MenuContext"
+import {useCreateMenuMutation, MenuItemDto, MenuOptionDto} from "../../graphql/types"
 import useComponentSize from "../../settings/useComponentSize"
 import {
     ButtonGroup,
     DrawerTitle,
     DrawerTitleWrapper,
     FieldDetails,
-    Form,
+    Form
 } from "../DrawerItems/DrawerItems.style"
 import MenuItemForm from "../MenuItemForm/MenuItemForm"
+import _ from 'lodash'
+import {postData} from "../../utils/fetch"
 
-const options = [{ title: "BreakFast" }, { title: "lunch" }]
+
+const options = [{title: "BreakFast"}, {title: "lunch"}]
 
 type Props = any
 
 const AddProduct: React.FC<Props> = (props) => {
     let [formRef] = useComponentSize()
-    const [, createMenuItem] = useCreateMenuItemWithMenuOptionsMutation()
-    const [, createMenu] = useCreateMenuItemMutation()
+    const [, createMenu] = useCreateMenuMutation()
     const dispatch = useDrawerDispatch()
-    const closeDrawer = useCallback(() => dispatch({ type: "CLOSE_DRAWER" }), [
+    const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
-    const { register, handleSubmit, setValue, errors } = useForm()
+    const {register, handleSubmit, setValue, errors} = useForm()
     const [vegOption, setVegOption] = useState(false)
     const [showOptions, setShowOption] = useState(false)
-    const menuOptions = useMenuState("menuOption")
+    const menuOptions = useMenuState("menuOptions")
     const [tag, setTag] = useState([])
     const [description, setDescription] = useState("")
 
     React.useEffect(() => {
-        register({ name: "menu_category", required: true })
-        register({ name: "path", required: true })
-        register({ name: "description" })
+        register({name: "menu_category", required: true})
+        register({name: "images", required: true})
+        register({name: "description"})
     }, [register])
 
     const handleDescriptionChange = (e) => {
@@ -66,91 +56,83 @@ const AddProduct: React.FC<Props> = (props) => {
         setDescription(value)
     }
 
-    const handleMultiChange = ({ value }) => {
+    const handleMultiChange = ({value}) => {
         setValue("menu_category", value)
         setTag(value)
     }
 
-    const handleUploader = (path) => {
-        setValue("path", path)
+    const handleUploader = (files) => {
+        setValue("images", files)
     }
-    const onSubmit = (data) => {
-        interface DataForm {
-            description?: string
-            title: string
-            single_serves: string
-            price_per_plate: string
-            minimum_quantity: string
-            maximum_quantity?: string
-            path?: string
-        }
+    const onSubmit = async (data) => {
         const {
-            description,
             title,
-            single_serves,
-            maximum_quantity,
-            path,
-            price_per_plate,
-            minimum_quantity,
-        }: DataForm = data
+            description,
+            singleServes,
+            pricePerPlate,
+            maximumOrderQty,
+            minimumOrderQty,
+            vegetarian_option,
+        }: MenuItemDto = data
+        const images: File[] = data.images
         if (menuOptions.length !== 0) {
-            const menu_options: MenuOptionCreateWithoutMenu_ItemInput[] = menuOptions.map(
-                (option: MenuOption) => {
+            const options: MenuOptionDto[] = menuOptions.map(
+                (option: MenuOptionDto) => {
                     let newOption
 
-                    newOption = _.omit(option, ["id", "menu_choices"])
-                    const choices = option.menu_choices.map((choice) => {
+                    newOption = _.omit(option, ["id", "menuChoices"])
+                    const choices = option.menuChoices.map((choice) => {
                         const newChoice = _.omit(choice, "id")
-
                         return newChoice
                     })
 
                     return {
                         ...newOption,
-                        menu_choices: {
-                            create: choices,
-                        },
+                        menuChoices: choices
                     }
                 }
             )
 
-            createMenuItem({
-                description,
+            const newRecord: MenuItemDto = {
                 title,
-                minimum_quantity: Number(minimum_quantity),
-                maximum_quantity: Number(maximum_quantity),
-                price_per_plate: Number(price_per_plate),
-                single_serves: Number(single_serves),
-                vegetarian_option: vegOption,
-                image: {
-                    path,
-                },
-                menu_options,
-                menu_category_id: "ckfs2e6vq002319meabmg58hu",
-            })
-        } else {
+                description,
+                singleServes: Number(singleServes),
+                pricePerPlate: Number(pricePerPlate),
+                maximumOrderQty: Number(maximumOrderQty),
+                minimumOrderQty: Number(minimumOrderQty),
+                vegetarian_option,
+                menuOptions: options
+            }
             createMenu({
-                description,
+                newRecord
+            }).then(res => uploadImages(res.data.createMenu.id))
+        } else {
+            const newRecord: MenuItemDto = {
                 title,
-                minimum_quantity: Number(minimum_quantity),
-                maximum_quantity: Number(maximum_quantity),
-                price_per_plate: Number(price_per_plate),
-                single_serves: Number(single_serves),
-                vegetarian_option: vegOption,
-                image: {
-                    path,
-                },
-                menu_category_id: "ckfs2e6vq002319meabmg58hu",
+                description,
+                singleServes: Number(singleServes),
+                pricePerPlate: Number(pricePerPlate),
+                maximumOrderQty: Number(maximumOrderQty),
+                minimumOrderQty: Number(minimumOrderQty),
+                vegetarian_option: vegOption
+            }
+            createMenu({
+                newRecord
+            }).then(res => uploadImages(res.data.createMenu.id))
+        }
+        const uploadImages = async (id) => {
+            const formData = new FormData()
+            images.forEach((file: File) => {
+                formData.append('images', file)
             })
+            if (images && images !== null) {
+                postData(`${process.env.REACT_APP_API_URL}/upload-files/${id}`, formData)
+                    .then(data => {
+                        console.log(data) // JSON data parsed by `data.json()` call
+                    });
+            }
         }
         closeDrawer()
-        toaster.positive(<>Item Created</>, {
-            overrides: {
-                InnerContainer: {
-                    style: { width: "100%" },
-                },
-            },
-        })
     }
 
     return (
@@ -159,19 +141,19 @@ const AddProduct: React.FC<Props> = (props) => {
                 <DrawerTitle>Add Menu Item</DrawerTitle>
             </DrawerTitleWrapper>
 
-            <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
+            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}} enctype="multipart/form-data">
                 <Scrollbars
                     autoHide
                     renderView={(props) => (
                         <div
                             {...props}
-                            style={{ ...props.style, overflowX: "hidden" }}
+                            style={{...props.style, overflowX: "hidden"}}
                         />
                     )}
                     renderTrackHorizontal={(props) => (
                         <div
                             {...props}
-                            style={{ display: "none" }}
+                            style={{display: "none"}}
                             className="track-horizontal"
                         />
                     )}
@@ -238,10 +220,10 @@ const AddProduct: React.FC<Props> = (props) => {
                                     <FormLabel>Single Serves</FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: true })}
-                                        name="single_serves"
+                                        inputRef={register({required: true})}
+                                        name="singleServes"
                                     />
-                                    {errors.single_serves && (
+                                    {errors.singleServes && (
                                         <Error>This Field is Required</Error>
                                     )}
                                 </FormFields>
@@ -250,10 +232,10 @@ const AddProduct: React.FC<Props> = (props) => {
                                     <FormLabel>Price Per Plate</FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: true })}
-                                        name="price_per_plate"
+                                        inputRef={register({required: true})}
+                                        name="pricePerPlate"
                                     />
-                                    {errors.price_per_plate && (
+                                    {errors.pricePerPlate && (
                                         <Error>This Field is Required</Error>
                                     )}
                                 </FormFields>
@@ -264,10 +246,10 @@ const AddProduct: React.FC<Props> = (props) => {
                                     </FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: true })}
-                                        name="minimum_quantity"
+                                        inputRef={register({required: true})}
+                                        name="minimumOrderQty"
                                     />
-                                    {errors.minimum_quantity && (
+                                    {errors.minimumOrderQty && (
                                         <Error>This Field is Required</Error>
                                     )}
                                 </FormFields>
@@ -277,14 +259,14 @@ const AddProduct: React.FC<Props> = (props) => {
                                     </FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: false })}
-                                        name="maximum_quantity"
+                                        inputRef={register({required: false})}
+                                        name="maximumOrderQty"
                                     />
                                 </FormFields>
 
                                 <FormFields>
                                     <FormLabel>Choose a Category</FormLabel>
-                                    <Select
+                                    {/* <Select
                                         options={options}
                                         labelKey="title"
                                         valueKey="title"
@@ -294,7 +276,7 @@ const AddProduct: React.FC<Props> = (props) => {
                                         onChange={handleMultiChange}
                                         overrides={{
                                             Placeholder: {
-                                                style: ({ $theme }) => {
+                                                style: ({$theme}) => {
                                                     return {
                                                         ...$theme.typography
                                                             .fontBold14,
@@ -305,7 +287,7 @@ const AddProduct: React.FC<Props> = (props) => {
                                                 },
                                             },
                                             DropdownListItem: {
-                                                style: ({ $theme }) => {
+                                                style: ({$theme}) => {
                                                     return {
                                                         ...$theme.typography
                                                             .fontBold14,
@@ -332,7 +314,7 @@ const AddProduct: React.FC<Props> = (props) => {
                                         <Error>
                                             You have to pick a menu category
                                         </Error>
-                                    )}
+                                    )} */}
                                 </FormFields>
                             </DrawerBox>
                         </Col>
@@ -396,7 +378,7 @@ const AddProduct: React.FC<Props> = (props) => {
                         onClick={closeDrawer}
                         overrides={{
                             BaseButton: {
-                                style: ({ $theme }) => ({
+                                style: ({$theme}) => ({
                                     width: "50%",
                                     borderTopLeftRadius: "3px",
                                     borderTopRightRadius: "3px",
@@ -415,7 +397,7 @@ const AddProduct: React.FC<Props> = (props) => {
                         type="submit"
                         overrides={{
                             BaseButton: {
-                                style: ({ $theme }) => ({
+                                style: ({$theme}) => ({
                                     width: "50%",
                                     borderTopLeftRadius: "3px",
                                     borderTopRightRadius: "3px",

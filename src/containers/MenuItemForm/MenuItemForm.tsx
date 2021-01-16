@@ -1,12 +1,13 @@
-import { Checkbox, LABEL_PLACEMENT } from "baseui/checkbox"
-import { Delete, Plus } from "baseui/icon"
+import {Checkbox, LABEL_PLACEMENT} from "baseui/checkbox"
+import {Delete, Plus} from "baseui/icon"
 import React from "react"
-import Button, { KIND } from "../../components/Button/Button"
-import { FormFields, FormLabel } from "../../components/FormFields/FormFields"
+import Button, {KIND} from "../../components/Button/Button"
+import {FormFields, FormLabel} from "../../components/FormFields/FormFields"
 import Input from "../../components/Input/Input"
-import Popover, { PLACEMENT } from "../../components/Popover/Popover"
-import { Textarea } from "../../components/Textarea/Textarea"
-import { useMenuDispatch, useMenuState } from "../../context/MenuContext"
+import Popover, {PLACEMENT} from "../../components/Popover/Popover"
+import {Textarea} from "../../components/Textarea/Textarea"
+import {useMenuDispatch, useMenuState} from "../../context/MenuContext"
+import {MenuChoice, MenuOption} from "../../graphql/types"
 import {
     AddButton,
     Card,
@@ -14,10 +15,10 @@ import {
     ListTitle,
     MainWrapper,
     MenuGrid,
-    ToggleAddCard,
+    ToggleAddCard
 } from "./MenuItemFormStyles"
 
-const MenuItemForm = ({ refs }: any) => {
+const MenuItemForm = ({refs}: any) => {
     const [title, setTitle] = React.useState("")
     const [name, setName] = React.useState("")
     const [description, setDescription] = React.useState("")
@@ -25,16 +26,17 @@ const MenuItemForm = ({ refs }: any) => {
     const [choice_price, setChoicePrice] = React.useState(0)
     const [use_checkboxes, setUseCheckbox] = React.useState(false)
     const [minimum_choice, setMiniMumChoice] = React.useState(0)
-    const menuOptions = useMenuState("menuOption")
+    const menuOptions = useMenuState("menuOptions")
     const dispatch = useMenuDispatch()
 
     const submit = () => {
-        const menuOption = {
+        const menuOption: MenuOption = {
             id: Math.floor(Math.random() * 100).toString(),
             title: title,
-            maximum_choice: Number(maximum_choice),
-            minimum_choice: Number(minimum_choice),
-            menu_choices: [],
+            maximumChoice: Number(maximum_choice),
+            minimumChoice: Number(minimum_choice),
+            useCheckBoxes: use_checkboxes,
+            menuChoices: [],
         }
 
         dispatch({
@@ -44,15 +46,15 @@ const MenuItemForm = ({ refs }: any) => {
         setTitle("")
         setMiniMumChoice(0)
         setMaxiMumChoice(0)
+
     }
 
     const addChoice = (id) => {
-        const menu_choice = {
+        const menu_choice: MenuChoice = {
             id: Math.floor(Math.random() * 100).toString(),
             name,
             description,
-            choice_price: Number(choice_price),
-            use_checkboxes,
+            choicePrice: Number(choice_price),
         }
 
         dispatch({
@@ -69,7 +71,7 @@ const MenuItemForm = ({ refs }: any) => {
     return (
         <div>
             <Popover
-                content={({ close }) => (
+                content={({close}) => (
                     <MainWrapper>
                         <FormFields>
                             <FormLabel>Title</FormLabel>
@@ -98,11 +100,26 @@ const MenuItemForm = ({ refs }: any) => {
                                 }
                             />
                         </FormFields>
+                        <FormFields>
+                            <Checkbox
+                                checked={use_checkboxes}
+                                onChange={(e) =>
+                                    setUseCheckbox(
+                                        !use_checkboxes
+                                    )
+                                }
+                                labelPlacement={
+                                    LABEL_PLACEMENT.right
+                                }
+                            >
+                                Use Checkboxes?
+                            </Checkbox>
+                        </FormFields>
                         <Button
                             kind={KIND.primary}
                             overrides={{
                                 BaseButton: {
-                                    style: ({ $theme }) => ({
+                                    style: ({$theme}) => ({
                                         borderTopLeftRadius: "3px",
                                         borderTopRightRadius: "3px",
                                         borderBottomRightRadius: "3px",
@@ -164,7 +181,7 @@ const MenuItemForm = ({ refs }: any) => {
                                     </div>
                                 </ListTitle>
                                 <Popover
-                                    content={({ close }) => (
+                                    content={({close}) => (
                                         <>
                                             <MainWrapper>
                                                 <FormFields>
@@ -207,19 +224,7 @@ const MenuItemForm = ({ refs }: any) => {
                                                     />
                                                 </FormFields>
                                                 <FormFields>
-                                                    <Checkbox
-                                                        checked={use_checkboxes}
-                                                        onChange={(e) =>
-                                                            setUseCheckbox(
-                                                                !use_checkboxes
-                                                            )
-                                                        }
-                                                        labelPlacement={
-                                                            LABEL_PLACEMENT.right
-                                                        }
-                                                    >
-                                                        Use Checkboxes?
-                                                    </Checkbox>
+
 
                                                     <Button
                                                         kind={KIND.primary}
@@ -277,8 +282,8 @@ const MenuItemForm = ({ refs }: any) => {
                                         Add a Choice
                                     </ToggleAddCard>
                                 </Popover>
-                                {option.menu_choices.length !== 0 ? (
-                                    option.menu_choices.map((choice) => (
+                                {option.menuChoices.length !== 0 ? (
+                                    option.menuChoices.map((choice) => (
                                         <Card key={choice.id}>
                                             {choice.name}{" "}
                                             <div
@@ -298,21 +303,21 @@ const MenuItemForm = ({ refs }: any) => {
                                         </Card>
                                     ))
                                 ) : (
-                                    <p
-                                        style={{
-                                            marginLeft: "9px",
-                                            color: "GrayText",
-                                        }}
-                                    >
-                                        You don't have any choices
-                                    </p>
-                                )}
+                                        <p
+                                            style={{
+                                                marginLeft: "9px",
+                                                color: "GrayText",
+                                            }}
+                                        >
+                                            You don't have any choices
+                                        </p>
+                                    )}
                             </List>
                         </div>
                     ))
                 ) : (
-                    <p>No Options Yet Try Adding</p>
-                )}
+                        <p>No Options Yet Try Adding</p>
+                    )}
             </MenuGrid>
         </div>
     )

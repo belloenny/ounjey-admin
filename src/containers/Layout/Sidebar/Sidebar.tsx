@@ -33,7 +33,7 @@ const sidebarMenus = [
     {
         name: "MenuItems",
         path: PRODUCTS,
-        exact: false,
+        exact: true,
         icon: <ProductIcon />,
     },
     {

@@ -1,57 +1,66 @@
-mutation CreateMenuItemWithMenuOptions(
-    $description: String
-    $image: ImageInput
-    $maximum_quantity: Int
-    $menu_options: [MenuOptionCreateWithoutMenu_itemInput!]
-    $minimum_quantity: Int!
-    $price_per_plate: Int!
-    $single_serves: Int!
-    $title: String!
-    $vegetarian_option: Boolean! = false
-    $menu_category_id: String!
-) {
-    createMenuItem(
-        data: {
-            image: $image
-            title: $title
-            description: $description
-            vegetarian_option: $vegetarian_option
-            single_serves: $single_serves
-            price_per_plate: $price_per_plate
-            minimum_quantity: $minimum_quantity
-            maximum_quantity: $maximum_quantity
-            menu_options: { create: $menu_options }
-            menu_category: { connect: { id: $menu_category_id } }
-        }
-    ) {
-        id
+# mutation CreateMenu(
+#     $description: String
+#     $maximumOrderQty: Int
+#     $menu_options: [MenuOptionCreateWithoutMenu_itemInput!]
+#     $minimumOrderQty: Int!
+#     $pricePerPlate: Int!
+#     $single_serves: Int!
+#     $title: String!
+#     $vegetarian_option: Boolean! = false
+#     $menu_category_id: String!
+# ) {
+#     createMenu (
+#         data: {
+#             image: $image
+#             title: $title
+#             description: $description
+#             vegetarian_option: $vegetarian_option
+#             single_serves: $single_serves
+#             price_per_plate: $price_per_plate
+#             minimum_quantity: $minimum_quantity
+#             maximum_quantity: $maximum_quantity
+#             menu_options: { create: $menu_options }
+#             menu_category: { connect: { id: $menu_category_id } }
+#         }
+#     ) {
+#         id
+#     }
+# }
+
+mutation CreateMenu(
+  $newRecord: MenuItemDto!
+){
+  createMenu (
+    newRecord: $newRecord
+    ){
+      id
     }
 }
 
-mutation CreateMenuItem(
-    $description: String
-    $image: ImageInput
-    $maximum_quantity: Int
-    $minimum_quantity: Int!
-    $price_per_plate: Int!
-    $single_serves: Int!
-    $title: String!
-    $vegetarian_option: Boolean! = false
-    $menu_category_id: String!
-) {
-    createMenuItem(
-        data: {
-            image: $image
-            title: $title
-            description: $description
-            vegetarian_option: $vegetarian_option
-            single_serves: $single_serves
-            price_per_plate: $price_per_plate
-            minimum_quantity: $minimum_quantity
-            maximum_quantity: $maximum_quantity
-            menu_category: { connect: { id: $menu_category_id } }
-        }
-    ) {
-        id
-    }
-}
+# mutation CreateMenuItem(
+#     $description: String
+#     $image: ImageInput
+#     $maximum_quantity: Int
+#     $minimum_quantity: Int!
+#     $price_per_plate: Int!
+#     $single_serves: Int!
+#     $title: String!
+#     $vegetarian_option: Boolean! = false
+#     $menu_category_id: String!
+# ) {
+#     createMenuItem(
+#         data: {
+#             image: $image
+#             title: $title
+#             description: $description
+#             vegetarian_option: $vegetarian_option
+#             single_serves: $single_serves
+#             price_per_plate: $price_per_plate
+#             minimum_quantity: $minimum_quantity
+#             maximum_quantity: $maximum_quantity
+#             menu_category: { connect: { id: $menu_category_id } }
+#         }
+#     ) {
+#         id
+#     }
+# }

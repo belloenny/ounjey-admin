@@ -1,26 +1,26 @@
-mutation UpdateOneMenuItem(
-    $updateOneMenuItemData: MenuItemUpdateInput!
-    $updateOneMenuItemWhere: MenuItemWhereUniqueInput!
-) {
-    updateOneMenuItem(
-        data: $updateOneMenuItemData
-        where: $updateOneMenuItemWhere
-    ) {
-        title
-        single_serves
-        price_per_plate
-        id
-    }
-}
+# mutation UpdateOneMenuItem(
+#     $updateOneMenuItemData: MenuItemUpdateInput!
+#     $updateOneMenuItemWhere: MenuItemWhereUniqueInput!
+# ) {
+#     updateOneMenuItem(
+#         data: $updateOneMenuItemData
+#         where: $updateOneMenuItemWhere
+#     ) {
+#         title
+#         single_serves
+#         price_per_plate
+#         id
+#     }
+# }
 
-mutation UpdateItemPhoto($imageId: ID!, $path: String!) {
-    updateItemPhoto(imageId: $imageId, path: $path) {
-        src
-    }
-}
+# mutation UpdateItemPhoto($imageId: ID!, $path: String!) {
+#     updateItemPhoto(imageId: $imageId, path: $path) {
+#         src
+#     }
+# }
 
-mutation DeleteMenu($id: String) {
-    deleteMenuItem(where: { id: $id }) {
-        id
-    }
-}
+# mutation DeleteMenu($id: String) {
+#     deleteMenuItem(where: { id: $id }) {
+#         id
+#     }
+# }

@@ -1,5 +1,0 @@
-query Categories($user_id: String!) {
-    menuCategories(where: { belongs_to: { user_id: { in: [$user_id] } } }) {
-        title
-    }
-}

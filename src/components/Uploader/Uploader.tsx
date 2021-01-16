@@ -1,9 +1,9 @@
-import { styled } from "baseui"
-import React, { useCallback, useEffect, useState } from "react"
-import { useDropzone } from "react-dropzone"
-import { UploadIcon } from "../AllSvgIcon"
+import {styled} from "baseui"
+import React, {useCallback, useEffect, useState} from "react"
+import {useDropzone} from "react-dropzone"
+import {UploadIcon} from "../AllSvgIcon"
 
-const Text = styled("span", ({ $theme }) => ({
+const Text = styled("span", ({$theme}) => ({
     ...$theme.typography.font14,
     fontFamily: $theme.typography.primaryFontFamily,
     color: $theme.colors.textDark,
@@ -11,12 +11,12 @@ const Text = styled("span", ({ $theme }) => ({
     textAlign: "center",
 }))
 
-const TextHighlighted = styled("span", ({ $theme }) => ({
+const TextHighlighted = styled("span", ({$theme}) => ({
     color: $theme.colors.primary,
     fontWeight: "bold",
 }))
 
-const Container = styled("div", ({ props }) => ({
+const Container = styled("div", ({props}) => ({
     flex: "1",
     display: "flex",
     flexDirection: "column",
@@ -40,7 +40,7 @@ const ThumbsContainer = styled("aside", () => ({
     marginTop: "16px",
 }))
 
-const Thumb = styled("div", ({ $theme }) => ({
+const Thumb = styled("div", ({$theme}) => ({
     ...$theme.borders.borderEA,
     display: "inline-flex",
     borderRadius: "2px",
@@ -64,29 +64,24 @@ const img = {
     height: "100%",
 }
 
-function Uploader({ onChange, imageURL }: any) {
+function Uploader({onChange, imageURL}: any) {
     const [files, setFiles] = useState(
-        imageURL ? [{ name: "demo", preview: imageURL }] : []
+        imageURL ? [{name: "demo", preview: imageURL}] : []
     )
-    const { getRootProps, getInputProps } = useDropzone({
+    const {getRootProps, getInputProps} = useDropzone({
         accept: "image/*",
-        multiple: false,
+        multiple: true,
         onDrop: useCallback(
             (acceptedFiles) => {
-                const reader = new FileReader()
-                acceptedFiles.map((file) => {
-                    reader.readAsDataURL(file)
-                    reader.onload = () => {
-                        setFiles(
-                            acceptedFiles.map((file) =>
-                                Object.assign(file, {
-                                    preview: URL.createObjectURL(file),
-                                })
-                            )
-                        )
-                        onChange(reader.result)
-                    }
-                })
+                // const reader = new FileReader()
+                setFiles(
+                    acceptedFiles.map((file) =>
+                        Object.assign(file, {
+                            preview: URL.createObjectURL(file),
+                        })
+                    )
+                )
+                onChange(acceptedFiles)
             },
             [onChange]
         ),

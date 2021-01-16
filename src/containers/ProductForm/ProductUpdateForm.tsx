@@ -1,58 +1,36 @@
-import { Checkbox, LABEL_PLACEMENT } from "baseui/checkbox"
-import { DeleteAlt } from "baseui/icon"
-import { toaster, ToasterContainer } from "baseui/toast"
-import React, { useCallback, useState } from "react"
-import { Scrollbars } from "react-custom-scrollbars"
-import { useForm } from "react-hook-form"
-import Button, { KIND } from "../../components/Button/Button"
-import DrawerBox from "../../components/DrawerBox/DrawerBox"
-import { Col, Row } from "../../components/FlexBox/FlexBox"
+import {ToasterContainer} from "baseui/toast"
+import React, {useCallback, useState} from "react"
+import {useForm} from "react-hook-form"
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
 import {
-    Error,
-    FormFields,
-    FormLabel,
-} from "../../components/FormFields/FormFields"
-import Input from "../../components/Input/Input"
-import { Textarea } from "../../components/Textarea/Textarea"
-import Uploader from "../../components/Uploader/Uploader"
-import { useDrawerDispatch, useDrawerState } from "../../context/DrawerContext"
-import { useMenuDispatch } from "../../context/MenuContext"
-import {
-    MenuItem,
-    useDeleteMenuMutation,
-    useUpdateItemPhotoMutation,
-    useUpdateOneMenuItemMutation,
+    MenuItem
 } from "../../graphql/types"
 import {
-    ButtonGroup,
     DrawerTitle,
-    DrawerTitleWrapper,
-    FieldDetails,
-    Form,
+    DrawerTitleWrapper
 } from "../DrawerItems/DrawerItems.style"
-import MenuItemForm from "../MenuItemForm/MenuItemForm"
 
 type Props = any
 
 const AddProduct: React.FC<Props> = () => {
     const dispatch = useDrawerDispatch()
     const data: MenuItem = useDrawerState("data")
-    const dispatchOptions = useMenuDispatch()
-    const [, updateMenu] = useUpdateOneMenuItemMutation()
-    const [, deleteMenu] = useDeleteMenuMutation()
-    const [, updatePhoto] = useUpdateItemPhotoMutation()
-    const [showOptions, setShowOption] = useState(false)
-    const closeDrawer = useCallback(() => dispatch({ type: "CLOSE_DRAWER" }), [
+    // const dispatchOptions = useMenuDispatch()
+    // const [, updateMenu] = useUpdateOneMenuItemMutation()
+    // const [, deleteMenu] = useDeleteMenuMutation()
+    // const [, updatePhoto] = useUpdateItemPhotoMutation()
+    // const [showOptions, setShowOption] = useState(false)
+    const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
-    const { register, handleSubmit, setValue, errors } = useForm({
+    const {register, handleSubmit, setValue, errors} = useForm({
         defaultValues: data,
     })
     const [description, setDescription] = useState(data.description)
     React.useEffect(() => {
-        register({ name: "type" })
-        register({ name: "categories" })
-        register({ name: "description" })
+        register({name: "type"})
+        register({name: "categories"})
+        register({name: "description"})
     }, [register])
 
     const handleDescriptionChange = (e) => {
@@ -61,63 +39,63 @@ const AddProduct: React.FC<Props> = () => {
         setDescription(value)
     }
 
-    const handleUploader = (path) => {
-        updatePhoto({
-            imageId: data.images[0].id,
-            path,
-        }).then(() =>
-            toaster.positive(<>Item Updated</>, {
-                overrides: {
-                    InnerContainer: {
-                        style: { width: "100%" },
-                    },
-                },
-            })
-        )
-    }
-    React.useEffect(() => {
-        if (data.menu_options)
-            data.menu_options.map((menu_option) =>
-                dispatchOptions({ type: "ADD_OPTION", menuOption: menu_option })
-            )
-        return () => dispatchOptions({ type: "RESET_OPTIONS" })
-    }, [data, dispatchOptions])
+    // const handleUploader = (path) => {
+    //     updatePhoto({
+    //         imageId: data.images[0].id,
+    //         path,
+    //     }).then(() =>
+    //         toaster.positive(<>Item Updated</>, {
+    //             overrides: {
+    //                 InnerContainer: {
+    //                     style: { width: "100%" },
+    //                 },
+    //             },
+    //         })
+    //     )
+    // }
+    // React.useEffect(() => {
+    //     if (data.menu_options)
+    //         data.menu_options.map((menu_option) =>
+    //             dispatchOptions({ type: "ADD_OPTION", menuOption: menu_option })
+    //         )
+    //     return () => dispatchOptions({ type: "RESET_OPTIONS" })
+    // }, [data, dispatchOptions])
 
-    const onSubmit = (result) => {
-        updateMenu({
-            updateOneMenuItemWhere: {
-                id: data.id,
-            },
-            updateOneMenuItemData: {
-                title: {
-                    set: result.title,
-                },
-                description: {
-                    set: result.description,
-                },
-                maximum_quantity: {
-                    set: Number(result.maximum_quantity),
-                },
-                minimum_quantity: {
-                    set: Number(result.minimum_quantity),
-                },
-                price_per_plate: {
-                    set: Number(result.price_per_plate),
-                },
-                single_serves: {
-                    set: Number(result.single_serves),
-                },
-            },
-        })
-        toaster.positive(<>Item Updated</>, {
-            overrides: {
-                InnerContainer: {
-                    style: { width: "100%" },
-                },
-            },
-        })
-        setTimeout(() => closeDrawer(), 500)
-    }
+    // const onSubmit = (result) => {
+    //     updateMenu({
+    //         updateOneMenuItemWhere: {
+    //             id: data.id,
+    //         },
+    //         updateOneMenuItemData: {
+    //             title: {
+    //                 set: result.title,
+    //             },
+    //             description: {
+    //                 set: result.description,
+    //             },
+    //             maximum_quantity: {
+    //                 set: Number(result.maximum_quantity),
+    //             },
+    //             minimum_quantity: {
+    //                 set: Number(result.minimum_quantity),
+    //             },
+    //             price_per_plate: {
+    //                 set: Number(result.price_per_plate),
+    //             },
+    //             single_serves: {
+    //                 set: Number(result.single_serves),
+    //             },
+    //         },
+    //     })
+    //     toaster.positive(<>Item Updated</>, {
+    //         overrides: {
+    //             InnerContainer: {
+    //                 style: { width: "100%" },
+    //             },
+    //         },
+    //     })
+    //     setTimeout(() => closeDrawer(), 500)
+    // }
     return (
         <>
             <ToasterContainer />
@@ -125,7 +103,7 @@ const AddProduct: React.FC<Props> = () => {
                 <DrawerTitle>Update Menu Item</DrawerTitle>
             </DrawerTitleWrapper>
 
-            <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
+            {/* <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
                 <Scrollbars
                     autoHide
                     renderView={(props) => (
@@ -195,7 +173,7 @@ const AddProduct: React.FC<Props> = () => {
                                         inputRef={register({ required: true })}
                                         name="single_serves"
                                     />
-                                    {errors.single_serves && (
+                                    {errors.singleServes && (
                                         <Error>This Field is Required</Error>
                                     )}
                                 </FormFields>
@@ -207,7 +185,7 @@ const AddProduct: React.FC<Props> = () => {
                                         inputRef={register({ required: true })}
                                         name="price_per_plate"
                                     />
-                                    {errors.price_per_plate && (
+                                    {errors.pricePerPlate && (
                                         <Error>This Field is Required</Error>
                                     )}
                                 </FormFields>
@@ -221,7 +199,7 @@ const AddProduct: React.FC<Props> = () => {
                                         inputRef={register({ required: true })}
                                         name="minimum_quantity"
                                     />
-                                    {errors.minimum_quantity && (
+                                    {errors.minimumOrderQty && (
                                         <Error>This Field is Required</Error>
                                     )}
                                 </FormFields>
@@ -236,7 +214,7 @@ const AddProduct: React.FC<Props> = () => {
                                     />
                                 </FormFields>
 
-                                {/* <FormFields>
+                                <FormFields>
                             <FormLabel>Choose a Category</FormLabel>
                             <Select
                                 options={options}
@@ -287,7 +265,7 @@ const AddProduct: React.FC<Props> = () => {
                                     You have to pick a menu category
                                 </Error>
                             )}
-                        </FormFields> */}
+                        </FormFields>
                             </DrawerBox>
                         </Col>
                     </Row>
@@ -404,7 +382,7 @@ const AddProduct: React.FC<Props> = () => {
                         Update MenuItem
                     </Button>
                 </ButtonGroup>
-            </Form>
+            </Form> */}
             <ToasterContainer />
         </>
     )

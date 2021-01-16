@@ -1,11 +1,11 @@
-import { MenuOption } from "../graphql/types"
-import { useCreateContext } from "./create-context"
+import {MenuOption} from "../graphql/types"
+import {useCreateContext} from "./create-context"
 
 export interface MenuState {
-    menuOption: MenuOption[]
+    menuOptions: MenuOption[]
 }
 const initialState: MenuState = {
-    menuOption: [],
+    menuOptions: [],
 }
 type State = typeof initialState
 type Action = any
@@ -15,18 +15,18 @@ function reducer(state: State, action: Action) {
         case "RESET_OPTIONS":
             return {
                 ...state,
-                menuOption: [],
+                menuOptions: [],
             }
         case "ADD_OPTION":
             return {
                 ...state,
-                menuOption: [...state.menuOption, action.menuOption],
+                menuOptions: [...state.menuOptions, action.menuOption],
             }
         case "DELETE_OPTION":
             const id = action.id
             return {
                 ...state,
-                menuOption: state.menuOption.filter(
+                menuOptions: state.menuOptions.filter(
                     (option) => option.id !== id
                 ),
             }
@@ -35,12 +35,12 @@ function reducer(state: State, action: Action) {
 
             return {
                 ...state,
-                menuOption: state.menuOption.map((option) => {
+                menuOptions: state.menuOptions.map((option) => {
                     if (option.id === option_id) {
                         return {
                             ...option,
-                            menu_choices: [
-                                ...option.menu_choices,
+                            menuChoices: [
+                                ...option.menuChoices,
                                 action.menu_choice,
                             ],
                         }
@@ -55,10 +55,10 @@ function reducer(state: State, action: Action) {
         case "DELETE_CHOICE":
             return {
                 ...state,
-                menuOption: state.menuOption.map((option) => {
+                menuOptions: state.menuOptions.map((option) => {
                     return {
                         ...option,
-                        menu_choices: option.menu_choices.filter(
+                        menuChoices: option.menuChoices.filter(
                             (choice) => choice.id !== action.id
                         ),
                     }
@@ -73,4 +73,5 @@ const [useMenuState, useMenuDispatch, MenuProvider] = useCreateContext(
     reducer
 )
 
-export { useMenuState, useMenuDispatch, MenuProvider }
+export {useMenuState, useMenuDispatch, MenuProvider}
+

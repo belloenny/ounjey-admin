@@ -1,22 +1,19 @@
-import { withStyle } from "baseui"
-import { StyledCell } from "baseui/table"
-import React, { useCallback, useState } from "react"
-import { Plus } from "../../components/AllSvgIcon"
+import {withStyle} from "baseui"
+import React, {useCallback, useState} from "react"
+import {Plus} from "../../components/AllSvgIcon"
 import Button from "../../components/Button/Button"
 import Checkbox from "../../components/CheckBox/CheckBox"
 import {
     Col as Column,
     Grid,
-    Row as Rows,
+    Row as Rows
 } from "../../components/FlexBox/FlexBox"
 import Input from "../../components/Input/Input"
-import NoResult from "../../components/NoResult/NoResult"
 import Select from "../../components/Select/Select"
-import { Header, Heading, Wrapper } from "../../components/WrapperStyle"
-import { AuthContext } from "../../context/auth"
-import { useDrawerDispatch } from "../../context/DrawerContext"
-import { useCategoriesQuery } from "../../graphql/types"
-import { StyledHeadCell, StyledTable, TableWrapper } from "./Category.style"
+import {Header, Heading, Wrapper} from "../../components/WrapperStyle"
+import {AuthContext} from "../../context/auth"
+import {useDrawerDispatch} from "../../context/DrawerContext"
+import {StyledHeadCell, StyledTable, TableWrapper} from "./Category.style"
 
 const Col = withStyle(Column, () => ({
     "@media only screen and (max-width: 767px)": {
@@ -35,33 +32,33 @@ const Row = withStyle(Rows, () => ({
 }))
 
 const categorySelectOptions = [
-    { value: "grocery", label: "Grocery" },
-    { value: "women-cloths", label: "Women Cloth" },
-    { value: "bags", label: "Bags" },
-    { value: "makeup", label: "Makeup" },
+    {value: "grocery", label: "Grocery"},
+    {value: "women-cloths", label: "Women Cloth"},
+    {value: "bags", label: "Bags"},
+    {value: "makeup", label: "Makeup"},
 ]
 
 export default function Category() {
     const [category] = useState([])
     const [search] = useState("")
     const dispatch = useDrawerDispatch()
-    const { userData } = React.useContext(AuthContext)
-    const [result] = useCategoriesQuery({
-        variables: {
-            user_id: userData.caterer.user_id,
-        },
-    })
-    const { data, fetching, error } = result
+    const {userData} = React.useContext(AuthContext)
+    // const [result] = useCategoriesQuery({
+    //     variables: {
+    //         user_id: userData.caterer.user_id,
+    //     },
+    // })
+    // const { data, fetching, error } = result
 
     const [checked] = useState(false)
     const openDrawer = useCallback(
         () =>
-            dispatch({ type: "OPEN_DRAWER", drawerComponent: "CATEGORY_FORM" }),
+            dispatch({type: "OPEN_DRAWER", drawerComponent: "CATEGORY_FORM"}),
         [dispatch]
     )
-    if (data) {
-        console.log(data)
-    }
+    // if (data) {
+    //     console.log(data)
+    // }
     // function Icon({ icon }) {
     //     const Component = icons.hasOwnProperty(icon) ? icons[icon] : "span"
     //     return <Component />
@@ -127,7 +124,7 @@ export default function Category() {
                     </Header>
 
                     <Wrapper
-                        style={{ boxShadow: "0 0 5px rgba(0, 0 , 0, 0.05)" }}
+                        style={{boxShadow: "0 0 5px rgba(0, 0 , 0, 0.05)"}}
                     >
                         <TableWrapper>
                             <StyledTable $gridTemplateColumns="minmax(70px, 70px) minmax(70px, 70px) minmax(70px, 70px) minmax(150px, auto) minmax(150px, auto) auto">
@@ -158,7 +155,7 @@ export default function Category() {
                                 <StyledHeadCell>Name</StyledHeadCell>
 
                                 <StyledHeadCell>Type</StyledHeadCell>
-                                {data ? (
+                                {/* {data ? (
                                     data.menuCategories.length ? (
                                         data.menuCategories
                                             .map((item) => Object.values(item))
@@ -189,7 +186,7 @@ export default function Category() {
                                             }}
                                         />
                                     )
-                                ) : null}
+                                ) : null} */}
                             </StyledTable>
                         </TableWrapper>
                     </Wrapper>
