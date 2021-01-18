@@ -3,6 +3,7 @@
   "version": "1.2.",
   "private": true,
   "dependencies": {
+    "@redq/reuse-modal": "^1.2.4",
     "@types/axios": "^0.14.0",
     "@types/lodash": "^4.14.161",
     "@urql/devtools": "^2.0.2",

@@ -1,11 +1,27 @@
 import {styled, withStyle} from "baseui"
+import Button from "../../components/Button/Button"
+
 import React, {useState} from "react"
 import {
     Col as Column,
     Grid,
     Row as Rows
 } from "../../components/FlexBox/FlexBox"
+import Fade from "react-reveal/Fade"
+import Input from "../../components/Input/Input"
+import NoResult from "../../components/NoResult/NoResult"
+import Placeholder from "../../components/Placeholder/Placeholder"
+import ProductCard from "../../components/ProductCard/ProductCard"
+
+import {Header, Heading} from "../../components/WrapperStyle"
 import {useMenuItemsQuery} from "../../graphql/types"
+import {CURRENCY} from "../../settings/constants"
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
+import {Drawer, ANCHOR} from "baseui/drawer"
+import {MenuIcon, ArrowLeftRound} from "../../components/AllSvgIcon"
+import Sidebar from "../Layout/Sidebar/Sidebar"
+import {DrawerWrapper, DrawerIcon, CloseButton} from "../Layout/Topbar/Topbar.style"
+import Select from "components/Select/Select"
 
 export const ProductsRow = styled("div", ({$theme}) => ({
     display: "flex",
@@ -48,6 +64,14 @@ export const LoaderWrapper = styled("div", () => ({
     display: "flex",
     flexWrap: "wrap",
 }))
+export const LoaderWrapper2 = styled("div", () => ({
+    width: "100%",
+    height: "100vh",
+    display: "flex",
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: "wrap",
+}))
 
 export const LoaderItem = styled("div", () => ({
     width: "25%",
@@ -69,15 +93,33 @@ const priceSelectOptions = [
 export default function Products() {
     // const { data, error, refetch, fetchMore } = useQuery(GET_PRODUCTS);
     const [result, fetchMore] = useMenuItemsQuery()
-
+    const dispatch = useDrawerDispatch()
+    const isOpen = useDrawerState("isOpen")
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [type] = useState([])
     const [priceOrder] = useState([])
     const [search] = useState([])
+    // React.useEffect(() => {
+    //     console.log(`fetchMore Function: ${fetchMore}`);
+
+    // }, [])
+    const openDrawer = React.useCallback(
+        () =>
+            dispatch({type: "OPEN_DRAWER", drawerComponent: "PRODUCT_FORM", data: fetchMore}),
+        [dispatch]
+    )
     const {data, fetching, error} = result
     if (error) {
         return <div>Error! {error.message}</div>
     }
+    // if (!isOpen) {
+    //     fetchMore({
+    //         requestPolicy: 'network-only'
+    //     })
+    //     console.log(`refreshed`)
+    // }
     function loadMore() {
+        console.log(`refreshed`)
         //   toggleLoading(true);
         //   fetchMore({
         //     variables: {
@@ -97,15 +139,15 @@ export default function Products() {
         //   });
     }
 
+
     return (
         <Grid fluid={true}>
-            {/* <Row>
+            <Row>
                 <Col md={12}>
                     <Header style={{marginBottom: 15}}>
                         <Col md={2} xs={12}>
                             <Heading>Menu Items</Heading>
                         </Col>
-
                         <Col md={10} xs={12}>
                             <Row>
                                 <Col md={3} xs={12}>
@@ -141,11 +183,12 @@ export default function Products() {
                         </Col>
                     </Header>
 
+
                     <Row>
                         {data ? (
                             data.caterer &&
-                                data.caterer.menu_items.length !== 0 ? (
-                                    data.caterer.menu_items.map(
+                                data.caterer.menuItems.length !== 0 ? (
+                                    data.caterer.menuItems.map(
                                         (item, index: number) => (
                                             <Col
                                                 md={4}
@@ -162,9 +205,10 @@ export default function Products() {
                                                 >
                                                     <ProductCard
                                                         title={item.title}
-                                                        image={item.images[0].src}
+                                                        image={item.images && item.images.length !== 0 ? item.images[0].src : ""}
                                                         currency={CURRENCY}
-                                                        price={item.price_per_plate}
+                                                        price={item.pricePerPlate}
+                                                        refetch={fetchMore}
                                                         data={item}
                                                     />
                                                 </Fade>
@@ -200,12 +244,11 @@ export default function Products() {
                                     justifyContent: "center",
                                 }}
                             >
-                                <Button isLoading={fetching}>Load More</Button>
                             </Col>
                         </Row>
                     )}
                 </Col>
-            </Row> */}
+            </Row>
         </Grid>
     )
 }

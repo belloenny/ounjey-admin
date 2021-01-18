@@ -70,18 +70,23 @@ function Uploader({onChange, imageURL}: any) {
     )
     const {getRootProps, getInputProps} = useDropzone({
         accept: "image/*",
-        multiple: true,
+        multiple: false,
         onDrop: useCallback(
             (acceptedFiles) => {
-                // const reader = new FileReader()
-                setFiles(
-                    acceptedFiles.map((file) =>
-                        Object.assign(file, {
-                            preview: URL.createObjectURL(file),
-                        })
-                    )
-                )
-                onChange(acceptedFiles)
+                const reader = new FileReader()
+                acceptedFiles.map((file) => {
+                    reader.readAsDataURL(file)
+                    reader.onload = () => {
+                        setFiles(
+                            acceptedFiles.map((file) =>
+                                Object.assign(file, {
+                                    preview: URL.createObjectURL(file),
+                                })
+                            )
+                        )
+                        onChange(reader.result)
+                    }
+                })
             },
             [onChange]
         ),

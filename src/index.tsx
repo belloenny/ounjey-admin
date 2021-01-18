@@ -24,6 +24,8 @@ const client = createClient({
         }
     },
 
+    requestPolicy: "network-only",
+
 })
 
 function App() {

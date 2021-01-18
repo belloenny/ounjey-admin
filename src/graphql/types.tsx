@@ -126,7 +126,14 @@ export type Mutation = {
   __typename?: 'Mutation';
   createMenuCategory?: Maybe<MenuCategory>;
   addMenuItems?: Maybe<MenuCategory>;
+  updateMenuChoice?: Maybe<MenuChoice>;
+  deleteMenuChoice?: Maybe<DeletionResult>;
   createMenu?: Maybe<MenuItem>;
+  updateMenu?: Maybe<MenuItem>;
+  updateMenuImage?: Maybe<Image>;
+  deleteMenu?: Maybe<MenuItem>;
+  updateMenuOption?: Maybe<MenuOption>;
+  deleteMenuOption?: Maybe<DeletionResult>;
 };
 
 
@@ -140,8 +147,48 @@ export type MutationAddMenuItemsArgs = {
 };
 
 
+export type MutationUpdateMenuChoiceArgs = {
+  id: Scalars['String'];
+  newRecord: MenuChoiceDto;
+};
+
+
+export type MutationDeleteMenuChoiceArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationCreateMenuArgs = {
   newRecord: MenuItemDto;
+};
+
+
+export type MutationUpdateMenuArgs = {
+  id: Scalars['String'];
+  newRecord: MenuItemDto;
+};
+
+
+export type MutationUpdateMenuImageArgs = {
+  isDuplicatedItem: Scalars['Boolean'];
+  image: Scalars['String'];
+  entityId: Scalars['String'];
+};
+
+
+export type MutationDeleteMenuArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdateMenuOptionArgs = {
+  id: Scalars['String'];
+  newRecord: MenuOptionDto;
+};
+
+
+export type MutationDeleteMenuOptionArgs = {
+  id: Scalars['String'];
 };
 
 export type MenuCategoryDto = {
@@ -153,32 +200,41 @@ export type MenuCategoryUpdateDto = {
   menuIds: Array<Scalars['String']>;
 };
 
-export type MenuItemDto = {
-  title: Scalars['String'];
+export type MenuChoiceDto = {
+  name?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  singleServes: Scalars['Float'];
-  pricePerPlate: Scalars['Float'];
+  choicePrice?: Maybe<Scalars['Float']>;
+  menuOptionId?: Maybe<Scalars['String']>;
+};
+
+export type DeletionResult = {
+  __typename?: 'DeletionResult';
+  data: Scalars['Boolean'];
+};
+
+export type MenuItemDto = {
+  title?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
+  singleServes?: Maybe<Scalars['Float']>;
+  pricePerPlate?: Maybe<Scalars['Float']>;
   vegetarian_option?: Maybe<Scalars['Boolean']>;
-  minimumOrderQty: Scalars['Float'];
+  minimumOrderQty?: Maybe<Scalars['Float']>;
   maximumOrderQty?: Maybe<Scalars['Float']>;
   menuOptions?: Maybe<Array<MenuOptionDto>>;
 };
 
 export type MenuOptionDto = {
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  minimumChoice: Scalars['Float'];
+  minimumChoice?: Maybe<Scalars['Float']>;
   maximumChoice?: Maybe<Scalars['Float']>;
   menuItemId?: Maybe<Scalars['String']>;
   useCheckBoxes?: Maybe<Scalars['Boolean']>;
   menuChoices?: Maybe<Array<MenuChoiceDto>>;
-};
-
-export type MenuChoiceDto = {
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  choicePrice: Scalars['Float'];
-  menuOptionId?: Maybe<Scalars['String']>;
 };
 
 export type CreateMenuMutationVariables = Exact<{
@@ -191,6 +247,102 @@ export type CreateMenuMutation = (
   & { createMenu?: Maybe<(
     { __typename?: 'MenuItem' }
     & Pick<MenuItem, 'id'>
+  )> }
+);
+
+export type DeleteMenuItemMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteMenuItemMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMenu?: Maybe<(
+    { __typename?: 'MenuItem' }
+    & Pick<MenuItem, 'id'>
+  )> }
+);
+
+export type DeleteOptionMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteOptionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMenuOption?: Maybe<(
+    { __typename?: 'DeletionResult' }
+    & Pick<DeletionResult, 'data'>
+  )> }
+);
+
+export type DeleteMenuChoiceMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteMenuChoiceMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMenuChoice?: Maybe<(
+    { __typename?: 'DeletionResult' }
+    & Pick<DeletionResult, 'data'>
+  )> }
+);
+
+export type UpdateMenuItemMutationVariables = Exact<{
+  newRecord: MenuItemDto;
+  id: Scalars['String'];
+}>;
+
+
+export type UpdateMenuItemMutation = (
+  { __typename?: 'Mutation' }
+  & { updateMenu?: Maybe<(
+    { __typename?: 'MenuItem' }
+    & Pick<MenuItem, 'id' | 'title' | 'description' | 'updatedAt'>
+  )> }
+);
+
+export type UpdateMenuOptionMutationVariables = Exact<{
+  newRecord: MenuOptionDto;
+  id: Scalars['String'];
+}>;
+
+
+export type UpdateMenuOptionMutation = (
+  { __typename?: 'Mutation' }
+  & { updateMenuOption?: Maybe<(
+    { __typename?: 'MenuOption' }
+    & Pick<MenuOption, 'id' | 'title' | 'description'>
+  )> }
+);
+
+export type UpdateMenuChoiceMutationVariables = Exact<{
+  newRecord: MenuChoiceDto;
+  id: Scalars['String'];
+}>;
+
+
+export type UpdateMenuChoiceMutation = (
+  { __typename?: 'Mutation' }
+  & { updateMenuChoice?: Maybe<(
+    { __typename?: 'MenuChoice' }
+    & Pick<MenuChoice, 'id' | 'name' | 'description'>
+  )> }
+);
+
+export type UpdateMenuImageMutationVariables = Exact<{
+  entityId: Scalars['String'];
+  image: Scalars['String'];
+  isDuplicatedItem: Scalars['Boolean'];
+}>;
+
+
+export type UpdateMenuImageMutation = (
+  { __typename?: 'Mutation' }
+  & { updateMenuImage?: Maybe<(
+    { __typename?: 'Image' }
+    & Pick<Image, 'src'>
   )> }
 );
 
@@ -219,7 +371,10 @@ export type MenuItemsQuery = (
     & { menuItems?: Maybe<Array<(
       { __typename?: 'MenuItem' }
       & Pick<MenuItem, 'id' | 'title' | 'description' | 'pricePerPlate' | 'maximumOrderQty' | 'minimumOrderQty' | 'singleServes' | 'vegetarian_option'>
-      & { menuOptions?: Maybe<Array<(
+      & { images?: Maybe<Array<(
+        { __typename?: 'Image' }
+        & Pick<Image, 'id' | 'src'>
+      )>>, menuOptions?: Maybe<Array<(
         { __typename?: 'MenuOption' }
         & Pick<MenuOption, 'id' | 'title' | 'description' | 'useCheckBoxes' | 'maximumChoice'>
         & { menuChoices?: Maybe<Array<(
@@ -261,6 +416,90 @@ export const CreateMenuDocument = gql`
 export function useCreateMenuMutation() {
   return Urql.useMutation<CreateMenuMutation, CreateMenuMutationVariables>(CreateMenuDocument);
 };
+export const DeleteMenuItemDocument = gql`
+    mutation DeleteMenuItem($id: String!) {
+  deleteMenu(id: $id) {
+    id
+  }
+}
+    `;
+
+export function useDeleteMenuItemMutation() {
+  return Urql.useMutation<DeleteMenuItemMutation, DeleteMenuItemMutationVariables>(DeleteMenuItemDocument);
+};
+export const DeleteOptionDocument = gql`
+    mutation DeleteOption($id: String!) {
+  deleteMenuOption(id: $id) {
+    data
+  }
+}
+    `;
+
+export function useDeleteOptionMutation() {
+  return Urql.useMutation<DeleteOptionMutation, DeleteOptionMutationVariables>(DeleteOptionDocument);
+};
+export const DeleteMenuChoiceDocument = gql`
+    mutation DeleteMenuChoice($id: String!) {
+  deleteMenuChoice(id: $id) {
+    data
+  }
+}
+    `;
+
+export function useDeleteMenuChoiceMutation() {
+  return Urql.useMutation<DeleteMenuChoiceMutation, DeleteMenuChoiceMutationVariables>(DeleteMenuChoiceDocument);
+};
+export const UpdateMenuItemDocument = gql`
+    mutation updateMenuItem($newRecord: MenuItemDto!, $id: String!) {
+  updateMenu(newRecord: $newRecord, id: $id) {
+    id
+    title
+    description
+    updatedAt
+  }
+}
+    `;
+
+export function useUpdateMenuItemMutation() {
+  return Urql.useMutation<UpdateMenuItemMutation, UpdateMenuItemMutationVariables>(UpdateMenuItemDocument);
+};
+export const UpdateMenuOptionDocument = gql`
+    mutation updateMenuOption($newRecord: MenuOptionDto!, $id: String!) {
+  updateMenuOption(newRecord: $newRecord, id: $id) {
+    id
+    title
+    description
+  }
+}
+    `;
+
+export function useUpdateMenuOptionMutation() {
+  return Urql.useMutation<UpdateMenuOptionMutation, UpdateMenuOptionMutationVariables>(UpdateMenuOptionDocument);
+};
+export const UpdateMenuChoiceDocument = gql`
+    mutation updateMenuChoice($newRecord: MenuChoiceDto!, $id: String!) {
+  updateMenuChoice(newRecord: $newRecord, id: $id) {
+    id
+    name
+    description
+  }
+}
+    `;
+
+export function useUpdateMenuChoiceMutation() {
+  return Urql.useMutation<UpdateMenuChoiceMutation, UpdateMenuChoiceMutationVariables>(UpdateMenuChoiceDocument);
+};
+export const UpdateMenuImageDocument = gql`
+    mutation UpdateMenuImage($entityId: String!, $image: String!, $isDuplicatedItem: Boolean!) {
+  updateMenuImage(entityId: $entityId, image: $image, isDuplicatedItem: $isDuplicatedItem) {
+    src
+  }
+}
+    `;
+
+export function useUpdateMenuImageMutation() {
+  return Urql.useMutation<UpdateMenuImageMutation, UpdateMenuImageMutationVariables>(UpdateMenuImageDocument);
+};
 export const CatererDocument = gql`
     query Caterer {
   caterer {
@@ -298,6 +537,10 @@ export const MenuItemsDocument = gql`
       minimumOrderQty
       singleServes
       vegetarian_option
+      images {
+        id
+        src
+      }
       menuOptions {
         id
         title

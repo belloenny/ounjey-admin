@@ -1,7 +1,7 @@
 import {Checkbox, LABEL_PLACEMENT} from "baseui/checkbox"
 import {Input} from "baseui/input"
 import {Textarea} from "baseui/textarea"
-import {ToasterContainer} from "baseui/toast"
+import {toaster, ToasterContainer} from "baseui/toast"
 import React, {useCallback, useState} from "react"
 import {Scrollbars} from "react-custom-scrollbars"
 import {Col, Row} from "react-flexbox-grid"
@@ -10,7 +10,7 @@ import Button, {KIND} from "../../components/Button/Button"
 import DrawerBox from "../../components/DrawerBox/DrawerBox"
 import {Error, FormFields, FormLabel} from "../../components/FormFields/FormFields"
 import Uploader from "../../components/Uploader/Uploader"
-import {useDrawerDispatch} from "../../context/DrawerContext"
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
 import {useMenuState} from "../../context/MenuContext"
 import {useCreateMenuMutation, MenuItemDto, MenuOptionDto} from "../../graphql/types"
 import useComponentSize from "../../settings/useComponentSize"
@@ -21,17 +21,21 @@ import {
     FieldDetails,
     Form
 } from "../DrawerItems/DrawerItems.style"
+import {Spinner} from "baseui/spinner";
 import MenuItemForm from "../MenuItemForm/MenuItemForm"
 import _ from 'lodash'
 import {postData} from "../../utils/fetch"
+import {LoaderWrapper, LoaderItem, LoaderWrapper2} from "../Products/Products"
+
 
 
 const options = [{title: "BreakFast"}, {title: "lunch"}]
 
-type Props = any
+type Props = {
 
-const AddProduct: React.FC<Props> = (props) => {
-    let [formRef] = useComponentSize()
+}
+
+const AddProduct: React.FC<Props> = () => {
     const [, createMenu] = useCreateMenuMutation()
     const dispatch = useDrawerDispatch()
     const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
@@ -41,12 +45,12 @@ const AddProduct: React.FC<Props> = (props) => {
     const [vegOption, setVegOption] = useState(false)
     const [showOptions, setShowOption] = useState(false)
     const menuOptions = useMenuState("menuOptions")
-    const [tag, setTag] = useState([])
+    const [isSubmitting, SetIsSubmitting] = useState(false)
     const [description, setDescription] = useState("")
 
     React.useEffect(() => {
         register({name: "menu_category", required: true})
-        register({name: "images", required: true})
+        register({name: "image", required: true})
         register({name: "description"})
     }, [register])
 
@@ -56,15 +60,16 @@ const AddProduct: React.FC<Props> = (props) => {
         setDescription(value)
     }
 
-    const handleMultiChange = ({value}) => {
-        setValue("menu_category", value)
-        setTag(value)
-    }
+    // const handleMultiChange = ({value}) => {
+    //     setValue("menu_category", value)
+    //     setTag(value)
+    // }
 
-    const handleUploader = (files) => {
-        setValue("images", files)
+    const handleUploader = (path) => {
+        setValue("image", path)
     }
     const onSubmit = async (data) => {
+        SetIsSubmitting(true)
         const {
             title,
             description,
@@ -73,6 +78,7 @@ const AddProduct: React.FC<Props> = (props) => {
             maximumOrderQty,
             minimumOrderQty,
             vegetarian_option,
+            image
         }: MenuItemDto = data
         const images: File[] = data.images
         if (menuOptions.length !== 0) {
@@ -100,12 +106,24 @@ const AddProduct: React.FC<Props> = (props) => {
                 pricePerPlate: Number(pricePerPlate),
                 maximumOrderQty: Number(maximumOrderQty),
                 minimumOrderQty: Number(minimumOrderQty),
+                image,
                 vegetarian_option,
                 menuOptions: options
             }
             createMenu({
                 newRecord
-            }).then(res => uploadImages(res.data.createMenu.id))
+            }).then(res => {
+                closeDrawer()
+            }).catch(err => (
+                toaster.negative(<>Something went Wrong {err.message}</>, {
+                    overrides: {
+                        InnerContainer: {
+                            style: {width: "100%"}
+                        }
+                    }
+                })
+
+            ))
         } else {
             const newRecord: MenuItemDto = {
                 title,
@@ -113,26 +131,27 @@ const AddProduct: React.FC<Props> = (props) => {
                 singleServes: Number(singleServes),
                 pricePerPlate: Number(pricePerPlate),
                 maximumOrderQty: Number(maximumOrderQty),
+                image,
                 minimumOrderQty: Number(minimumOrderQty),
                 vegetarian_option: vegOption
             }
             createMenu({
                 newRecord
-            }).then(res => uploadImages(res.data.createMenu.id))
+            }).then(res => {
+                closeDrawer()
+            }).catch(err => (
+                toaster.negative(<>Something went Wrong {err.message}</>, {
+                    overrides: {
+                        InnerContainer: {
+                            style: {width: "100%"}
+                        }
+                    }
+                })
+
+            ))
         }
-        const uploadImages = async (id) => {
-            const formData = new FormData()
-            images.forEach((file: File) => {
-                formData.append('images', file)
-            })
-            if (images && images !== null) {
-                postData(`${process.env.REACT_APP_API_URL}/upload-files/${id}`, formData)
-                    .then(data => {
-                        console.log(data) // JSON data parsed by `data.json()` call
-                    });
-            }
-        }
-        closeDrawer()
+
+
     }
 
     return (
@@ -140,8 +159,13 @@ const AddProduct: React.FC<Props> = (props) => {
             <DrawerTitleWrapper>
                 <DrawerTitle>Add Menu Item</DrawerTitle>
             </DrawerTitleWrapper>
+            {
+                isSubmitting && (<LoaderWrapper2>
+                    <Spinner />
+                </LoaderWrapper2>)
+            }
 
-            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}} enctype="multipart/form-data">
+            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}}>
                 <Scrollbars
                     autoHide
                     renderView={(props) => (
@@ -222,6 +246,7 @@ const AddProduct: React.FC<Props> = (props) => {
                                         type="number"
                                         inputRef={register({required: true})}
                                         name="singleServes"
+
                                     />
                                     {errors.singleServes && (
                                         <Error>This Field is Required</Error>
@@ -248,6 +273,7 @@ const AddProduct: React.FC<Props> = (props) => {
                                         type="number"
                                         inputRef={register({required: true})}
                                         name="minimumOrderQty"
+
                                     />
                                     {errors.minimumOrderQty && (
                                         <Error>This Field is Required</Error>
@@ -395,6 +421,7 @@ const AddProduct: React.FC<Props> = (props) => {
 
                     <Button
                         type="submit"
+                        disabled={isSubmitting}
                         overrides={{
                             BaseButton: {
                                 style: ({$theme}) => ({
@@ -411,7 +438,9 @@ const AddProduct: React.FC<Props> = (props) => {
                     </Button>
                 </ButtonGroup>
             </Form>
-            <ToasterContainer />
+            <LoaderWrapper2>
+                <ToasterContainer />
+            </LoaderWrapper2>
         </>
     )
 }

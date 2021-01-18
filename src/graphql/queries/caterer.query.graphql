@@ -30,6 +30,10 @@ query MenuItems {
             minimumOrderQty
             singleServes
             vegetarian_option
+            images {
+                id
+                src
+            }
             menuOptions {
                 id
                 title

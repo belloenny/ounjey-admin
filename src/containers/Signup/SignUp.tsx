@@ -67,7 +67,7 @@ export default () => {
 
             },
             () => {
-                toaster.positive(<>Check Your Inbox with email ${business_email} To Verify Your Email </>, {
+                toaster.positive(<>Check Your Inbox with email {business_email} To Verify Your Email </>, {
                     overrides: {
                         InnerContainer: {
                             style: {width: "100%"},

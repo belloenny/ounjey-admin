@@ -1,25 +1,47 @@
-import {ToasterContainer} from "baseui/toast"
+import {Checkbox, LABEL_PLACEMENT} from "baseui/checkbox"
+import {DeleteAlt} from "baseui/icon"
+import {toaster, ToasterContainer} from "baseui/toast"
 import React, {useCallback, useState} from "react"
+import {Scrollbars} from "react-custom-scrollbars"
 import {useForm} from "react-hook-form"
-import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
+import Button, {KIND} from "../../components/Button/Button"
+import DrawerBox from "../../components/DrawerBox/DrawerBox"
+import {Col, Row} from "../../components/FlexBox/FlexBox"
 import {
-    MenuItem
+    Error,
+    FormFields,
+    FormLabel,
+} from "../../components/FormFields/FormFields"
+import Input from "../../components/Input/Input"
+import Select from "../../components/Select/Select"
+import {Textarea} from "../../components/Textarea/Textarea"
+import Uploader from "../../components/Uploader/Uploader"
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
+import {useMenuDispatch} from "../../context/MenuContext"
+import {
+    MenuItem, MenuItemDto, useCreateMenuMutation, useDeleteMenuItemMutation, useUpdateMenuImageMutation, useUpdateMenuItemMutation
 } from "../../graphql/types"
 import {
+    ButtonGroup,
     DrawerTitle,
-    DrawerTitleWrapper
+    DrawerTitleWrapper,
+    FieldDetails,
+    Form,
 } from "../DrawerItems/DrawerItems.style"
+import MenuItemForm from "../MenuItemForm/MenuItemForm"
 
 type Props = any
 
 const AddProduct: React.FC<Props> = () => {
     const dispatch = useDrawerDispatch()
     const data: MenuItem = useDrawerState("data")
-    // const dispatchOptions = useMenuDispatch()
-    // const [, updateMenu] = useUpdateOneMenuItemMutation()
-    // const [, deleteMenu] = useDeleteMenuMutation()
+    const dispatchOptions = useMenuDispatch()
+    const [, updateMenu] = useUpdateMenuItemMutation()
+    const [, createMenu] = useCreateMenuMutation()
+    const [, updateImage] = useUpdateMenuImageMutation()
+    const [, deleteMenu] = useDeleteMenuItemMutation()
     // const [, updatePhoto] = useUpdateItemPhotoMutation()
-    // const [showOptions, setShowOption] = useState(false)
+    const [showOptions, setShowOption] = useState(false)
     const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
@@ -28,8 +50,8 @@ const AddProduct: React.FC<Props> = () => {
     })
     const [description, setDescription] = useState(data.description)
     React.useEffect(() => {
-        register({name: "type"})
-        register({name: "categories"})
+        // register({name: "type"})
+        // register({name: "categories"})
         register({name: "description"})
     }, [register])
 
@@ -39,63 +61,38 @@ const AddProduct: React.FC<Props> = () => {
         setDescription(value)
     }
 
-    // const handleUploader = (path) => {
-    //     updatePhoto({
-    //         imageId: data.images[0].id,
-    //         path,
-    //     }).then(() =>
-    //         toaster.positive(<>Item Updated</>, {
-    //             overrides: {
-    //                 InnerContainer: {
-    //                     style: { width: "100%" },
-    //                 },
-    //             },
-    //         })
-    //     )
-    // }
-    // React.useEffect(() => {
-    //     if (data.menu_options)
-    //         data.menu_options.map((menu_option) =>
-    //             dispatchOptions({ type: "ADD_OPTION", menuOption: menu_option })
-    //         )
-    //     return () => dispatchOptions({ type: "RESET_OPTIONS" })
-    // }, [data, dispatchOptions])
+    const handleUploader = (path) => {
+        setValue("image", path)
+        updateImage({
+            entityId: data.id,
+            image: path,
+            isDuplicatedItem: data.images.length === 0
+        })
+    }
 
-    // const onSubmit = (result) => {
-    //     updateMenu({
-    //         updateOneMenuItemWhere: {
-    //             id: data.id,
-    //         },
-    //         updateOneMenuItemData: {
-    //             title: {
-    //                 set: result.title,
-    //             },
-    //             description: {
-    //                 set: result.description,
-    //             },
-    //             maximum_quantity: {
-    //                 set: Number(result.maximum_quantity),
-    //             },
-    //             minimum_quantity: {
-    //                 set: Number(result.minimum_quantity),
-    //             },
-    //             price_per_plate: {
-    //                 set: Number(result.price_per_plate),
-    //             },
-    //             single_serves: {
-    //                 set: Number(result.single_serves),
-    //             },
-    //         },
-    //     })
-    //     toaster.positive(<>Item Updated</>, {
-    //         overrides: {
-    //             InnerContainer: {
-    //                 style: { width: "100%" },
-    //             },
-    //         },
-    //     })
-    //     setTimeout(() => closeDrawer(), 500)
-    // }
+    React.useEffect(() => {
+        if (data.menuOptions)
+            data.menuOptions.map((menu_option) =>
+                dispatchOptions({type: "ADD_OPTION", menuOption: menu_option})
+            )
+        return () => dispatchOptions({type: "RESET_OPTIONS"})
+    }, [data, dispatchOptions])
+
+    const onSubmit = (result) => {
+        const newRecord: MenuItemDto = {
+            title: result.title,
+            description: result.description,
+            singleServes: Number(result.singleServes),
+            pricePerPlate: Number(result.pricePerPlate),
+            maximumOrderQty: Number(result.maximumOrderQty),
+            minimumOrderQty: Number(result.minimumOrderQty)
+        }
+        updateMenu({
+            newRecord,
+            id: data.id
+        }).then(() => closeDrawer())
+
+    }
     return (
         <>
             <ToasterContainer />
@@ -103,19 +100,19 @@ const AddProduct: React.FC<Props> = () => {
                 <DrawerTitle>Update Menu Item</DrawerTitle>
             </DrawerTitleWrapper>
 
-            {/* <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
+            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}} enctype="multipart/form-data">
                 <Scrollbars
                     autoHide
                     renderView={(props) => (
                         <div
                             {...props}
-                            style={{ ...props.style, overflowX: "hidden" }}
+                            style={{...props.style, overflowX: "hidden"}}
                         />
                     )}
                     renderTrackHorizontal={(props) => (
                         <div
                             {...props}
-                            style={{ display: "none" }}
+                            style={{display: "none"}}
                             className="track-horizontal"
                         />
                     )}
@@ -130,7 +127,7 @@ const AddProduct: React.FC<Props> = () => {
                             <DrawerBox>
                                 <Uploader
                                     onChange={handleUploader}
-                                    imageURL={data.images[0].src}
+                                    imageURL={data.images && data.images.length !== 0 ? data.images[0].src : ""}
                                 />
                             </DrawerBox>
                         </Col>
@@ -150,6 +147,7 @@ const AddProduct: React.FC<Props> = () => {
                                     <Input
                                         inputRef={register({
                                             required: true,
+                                            maxLength: 20,
                                         })}
                                         name="title"
                                     />
@@ -170,8 +168,8 @@ const AddProduct: React.FC<Props> = () => {
                                     <FormLabel>Single Serves</FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: true })}
-                                        name="single_serves"
+                                        inputRef={register({required: true})}
+                                        name="singleServes"
                                     />
                                     {errors.singleServes && (
                                         <Error>This Field is Required</Error>
@@ -182,8 +180,8 @@ const AddProduct: React.FC<Props> = () => {
                                     <FormLabel>Price Per Plate</FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: true })}
-                                        name="price_per_plate"
+                                        inputRef={register({required: true})}
+                                        name="pricePerPlate"
                                     />
                                     {errors.pricePerPlate && (
                                         <Error>This Field is Required</Error>
@@ -196,8 +194,8 @@ const AddProduct: React.FC<Props> = () => {
                                     </FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: true })}
-                                        name="minimum_quantity"
+                                        inputRef={register({required: true})}
+                                        name="minimumOrderQty"
                                     />
                                     {errors.minimumOrderQty && (
                                         <Error>This Field is Required</Error>
@@ -209,66 +207,88 @@ const AddProduct: React.FC<Props> = () => {
                                     </FormLabel>
                                     <Input
                                         type="number"
-                                        inputRef={register({ required: false })}
-                                        name="maximum_quantity"
+                                        inputRef={register({required: false})}
+                                        name="maximumOrderQty"
                                     />
                                 </FormFields>
 
                                 <FormFields>
-                            <FormLabel>Choose a Category</FormLabel>
-                            <Select
-                                options={options}
-                                labelKey="title"
-                                valueKey="title"
-                                placeholder="Choose A Category"
-                                value={tag}
-                                type={TYPE.search}
-                                onChange={handleMultiChange}
-                                overrides={{
-                                    Placeholder: {
-                                        style: ({ $theme }) => {
-                                            return {
-                                                ...$theme.typography
-                                                    .fontBold14,
-                                                color:
-                                                    $theme.colors
-                                                        .textNormal,
-                                            }
-                                        },
-                                    },
-                                    DropdownListItem: {
-                                        style: ({ $theme }) => {
-                                            return {
-                                                ...$theme.typography
-                                                    .fontBold14,
-                                                color:
-                                                    $theme.colors
-                                                        .textNormal,
-                                            }
-                                        },
-                                    },
-                                    Popover: {
-                                        props: {
-                                            overrides: {
-                                                Body: {
-                                                    style: {
-                                                        zIndex: 5,
+                                    <FormLabel>Choose a Category</FormLabel>
+                                    {/* <Select
+                                        options={options}
+                                        labelKey="title"
+                                        valueKey="title"
+                                        placeholder="Choose A Category"
+                                        value={tag}
+                                        type={TYPE.search}
+                                        onChange={handleMultiChange}
+                                        overrides={{
+                                            Placeholder: {
+                                                style: ({$theme}) => {
+                                                    return {
+                                                        ...$theme.typography
+                                                            .fontBold14,
+                                                        color:
+                                                            $theme.colors
+                                                                .textNormal,
+                                                    }
+                                                },
+                                            },
+                                            DropdownListItem: {
+                                                style: ({$theme}) => {
+                                                    return {
+                                                        ...$theme.typography
+                                                            .fontBold14,
+                                                        color:
+                                                            $theme.colors
+                                                                .textNormal,
+                                                    }
+                                                },
+                                            },
+                                            Popover: {
+                                                props: {
+                                                    overrides: {
+                                                        Body: {
+                                                            style: {
+                                                                zIndex: 5,
+                                                            },
+                                                        },
                                                     },
                                                 },
                                             },
-                                        },
-                                    },
-                                }}
-                            />
-                            {errors.menu_category && (
-                                <Error>
-                                    You have to pick a menu category
-                                </Error>
-                            )}
-                        </FormFields>
+                                        }}
+                                    />
+                                    {errors.menu_category && (
+                                        <Error>
+                                            You have to pick a menu category
+                                        </Error>
+                                    )} */}
+                                </FormFields>
                             </DrawerBox>
                         </Col>
                     </Row>
+                    {/* <Row>
+                        <Col lg={4}>
+                            <FieldDetails>
+                                If Menu Has Vegetarian Options, Check the box
+                            </FieldDetails>
+                        </Col>
+                        <Col lg={8}>
+                            <DrawerBox>
+                                <FormFields>
+                                    <Checkbox
+                                        checked={vegOption}
+                                        onChange={(e) =>
+                                            setVegOption(!vegOption)
+                                        }
+                                        labelPlacement={LABEL_PLACEMENT.right}
+                                    >
+                                        Has Vegetarian Option
+                                    </Checkbox>
+                                </FormFields>
+                            </DrawerBox>
+                        </Col>
+                    </Row> */}
                     <Row>
                         <Col lg={4}>
                             <FieldDetails>
@@ -291,7 +311,10 @@ const AddProduct: React.FC<Props> = () => {
                                 <FormFields>
                                     {showOptions && (
                                         <div>
-                                            <MenuItemForm />
+                                            <MenuItemForm
+                                                isUpdateForm={true}
+                                                menuItemId={data.id}
+                                            />
                                         </div>
                                     )}
                                 </FormFields>
@@ -313,14 +336,16 @@ const AddProduct: React.FC<Props> = () => {
                                             <DeleteAlt size={24} />
                                         )}
                                         onClick={() => {
-                                            deleteMenu({
-                                                id: data.id,
-                                            }).then(() => closeDrawer())
+                                            deleteMenu({id: data.id}).then(() => {
+                                                //@ts-ignore
+                                                data.refetch()
+                                                closeDrawer()
+                                            })
                                         }}
                                         kind={KIND.minimal}
                                         overrides={{
                                             BaseButton: {
-                                                style: ({ $theme }) => ({
+                                                style: ({$theme}) => ({
                                                     backgroundColor:
                                                         "transparent",
 
@@ -342,6 +367,77 @@ const AddProduct: React.FC<Props> = () => {
                             </DrawerBox>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col lg={4}>
+                            <FieldDetails>
+                                If You Wish To Duplicate This MenuItem You can Do do by clicking the button
+                            </FieldDetails>
+                        </Col>
+                        <Col lg={8}>
+                            <DrawerBox>
+                                <FormFields>
+                                    <Button
+
+                                        onClick={() => {
+                                            createMenu({
+                                                newRecord: {
+                                                    title: data.title,
+                                                    description: data.description,
+                                                    pricePerPlate: data.pricePerPlate,
+                                                    vegetarian_option: data.vegetarian_option,
+                                                    maximumOrderQty: data.maximumOrderQty,
+                                                    minimumOrderQty: data.minimumOrderQty,
+                                                    singleServes: data.singleServes,
+                                                    menuOptions: data.menuOptions.length !== 0 ? data.menuOptions.map(option => {
+                                                        return {
+                                                            title: option.title,
+                                                            description: option.description,
+                                                            useCheckBoxes: option.useCheckBoxes,
+                                                            minimumChoice: option.minimumChoice,
+                                                            maximumChoice: option.maximumChoice,
+                                                            menuChoices: option.menuChoices.map(choice => {
+                                                                return {
+                                                                    name: choice.name,
+                                                                    description: choice.description,
+                                                                    choicePrice: choice.choicePrice
+                                                                }
+                                                            })
+                                                        }
+                                                    })
+
+                                                        : null
+                                                }
+                                            }).then(res => {
+                                                //@ts-ignore
+                                                data.refetch()
+                                                closeDrawer()
+                                            })
+                                        }}
+                                        kind={KIND.minimal}
+                                        overrides={{
+                                            BaseButton: {
+                                                style: ({$theme}) => ({
+                                                    backgroundColor:
+                                                        "transparent",
+
+                                                    borderTopLeftRadius: "3px",
+                                                    borderTopRightRadius: "3px",
+                                                    borderBottomRightRadius:
+                                                        "3px",
+                                                    borderBottomLeftRadius:
+                                                        "3px",
+                                                    marginRight: "15px",
+                                                    color: $theme.colors.red400,
+                                                }),
+                                            },
+                                        }}
+                                    >
+                                        Duplicate Menu
+                                    </Button>
+                                </FormFields>
+                            </DrawerBox>
+                        </Col>
+                    </Row>
                 </Scrollbars>
 
                 <ButtonGroup>
@@ -350,7 +446,7 @@ const AddProduct: React.FC<Props> = () => {
                         onClick={closeDrawer}
                         overrides={{
                             BaseButton: {
-                                style: ({ $theme }) => ({
+                                style: ({$theme}) => ({
                                     width: "50%",
                                     borderTopLeftRadius: "3px",
                                     borderTopRightRadius: "3px",
@@ -369,7 +465,7 @@ const AddProduct: React.FC<Props> = () => {
                         type="submit"
                         overrides={{
                             BaseButton: {
-                                style: ({ $theme }) => ({
+                                style: ({$theme}) => ({
                                     width: "50%",
                                     borderTopLeftRadius: "3px",
                                     borderTopRightRadius: "3px",
@@ -379,10 +475,10 @@ const AddProduct: React.FC<Props> = () => {
                             },
                         }}
                     >
-                        Update MenuItem
+                        Update
                     </Button>
                 </ButtonGroup>
-            </Form> */}
+            </Form>
             <ToasterContainer />
         </>
     )

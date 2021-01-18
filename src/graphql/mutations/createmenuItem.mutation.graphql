@@ -37,6 +37,54 @@ mutation CreateMenu(
     }
 }
 
+
+mutation DeleteMenuItem($id:String!) {
+  deleteMenu(id:$id){
+    id
+  }
+}
+
+mutation DeleteOption($id:String!) {
+  deleteMenuOption(id:$id){
+    data
+  }
+}
+
+mutation DeleteMenuChoice($id:String!) {
+  deleteMenuChoice(id:$id){
+    data
+  }
+}
+
+mutation updateMenuItem($newRecord: MenuItemDto!, $id: String!){
+  updateMenu(newRecord:$newRecord,id: $id) {
+    id
+    title
+    description
+    updatedAt
+  }
+}
+
+mutation updateMenuOption($newRecord: MenuOptionDto!, $id: String!){
+  updateMenuOption(newRecord:$newRecord,id: $id) {
+    id
+    title
+    description
+  }
+}
+
+mutation updateMenuChoice($newRecord: MenuChoiceDto!, $id: String!){
+  updateMenuChoice(newRecord:$newRecord,id: $id) {
+    id
+    name
+    description
+  }
+}
+mutation UpdateMenuImage($entityId:String!, $image: String!, $isDuplicatedItem: Boolean!){
+  updateMenuImage(entityId: $entityId, image: $image, isDuplicatedItem: $isDuplicatedItem){
+    src
+  }
+}
 # mutation CreateMenuItem(
 #     $description: String
 #     $image: ImageInput

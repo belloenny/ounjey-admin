@@ -17,12 +17,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "baseUrl": "src"
   },
   "include": [
-    "src"
-  ],
-  "rules": {
-    "no-unused-vars": "off"
-  }
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ]
 }

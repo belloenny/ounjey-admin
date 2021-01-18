@@ -1,5 +1,5 @@
 import React from "react"
-import { useDrawerDispatch } from "../../context/DrawerContext"
+import {useDrawerDispatch} from "../../context/DrawerContext"
 import {
     Image,
     ProductCardWrapper,
@@ -14,23 +14,19 @@ import {
 type ProductCardProps = {
     title: string
     image: any
-
     currency?: string
-
     price: number
-
+    refetch: () => void
     data: any
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
     title,
     image,
-
     price,
-
+    refetch,
     currency,
     data,
-
     ...props
 }) => {
     const dispatch = useDrawerDispatch()
@@ -40,7 +36,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             dispatch({
                 type: "OPEN_DRAWER",
                 drawerComponent: "PRODUCT_UPDATE_FORM",
-                data: data,
+                data: {
+                    ...data,
+                    refetch
+                },
             }),
         [dispatch, data]
     )
