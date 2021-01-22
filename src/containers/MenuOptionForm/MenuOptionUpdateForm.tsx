@@ -38,7 +38,7 @@ const OptionUpdate: React.FC<Props> = ({data, closeModal, itemId}: {data: MenuOp
       setDescription("")
       setMaxiMumChoice(0)
       setMiniMumChoice(0)
-      console.log(menuOptions)
+
     }
 
   }, [])

@@ -76,7 +76,9 @@ function Uploader({onChange, imageURL, setFile}: any) {
                 const reader = new FileReader()
                 acceptedFiles.map((file) => {
                     reader.readAsDataURL(file)
-                    setFile(file)
+                    if (setFile) {
+                        setFile(file)
+                    }
                     reader.onload = () => {
                         setFiles(
                             acceptedFiles.map((file) =>

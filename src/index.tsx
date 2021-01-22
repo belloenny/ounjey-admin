@@ -14,12 +14,14 @@ import "./theme/global.css"
 const client = createClient({
     url: process.env.REACT_APP_API_URL_GRAPHQL,
     exchanges: [devtoolsExchange, ...defaultExchanges],
+    requestPolicy: "network-only",
     fetchOptions: () => {
         const token = localStorage.getItem("auth_token")
         return {
             headers: {
                 authorization: token ? `Bearer ${token}` : ""
-            }
+            },
+
         }
     },
 

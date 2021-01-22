@@ -14,6 +14,8 @@ import {
 } from "../../components/FlexBox/FlexBox"
 import {Header, Heading, Wrapper} from "../../components/WrapperStyle"
 import {StyledHeadCell, StyledTable, TableWrapper} from "../Orders/Orders.style"
+import Placeholder from "components/Placeholder/Placeholder"
+import {LoaderWrapper, LoaderItem} from "containers/Products/Products"
 
 // const themedUseStyletron = createThemedUseStyletron<CustomThemeT>()
 
@@ -57,7 +59,7 @@ export default function SubAccount() {
 
   const [checked] = useState(false)
   const [result] = useCatererQuery()
-  const {data, error} = result
+  const {data, error, fetching} = result
   // const [status] = useState([])
   // const [limit] = useState([])
   // const [search] = useState([])
@@ -68,6 +70,23 @@ export default function SubAccount() {
       dispatch({type: "OPEN_DRAWER", drawerComponent: "SUBACCOUNT_FORM"}),
     [dispatch]
   )
+
+  if (fetching) {
+    return (<LoaderWrapper>
+      <LoaderItem>
+        <Placeholder />
+      </LoaderItem>
+      <LoaderItem>
+        <Placeholder />
+      </LoaderItem>
+      <LoaderItem>
+        <Placeholder />
+      </LoaderItem>
+      <LoaderItem>
+        <Placeholder />
+      </LoaderItem>
+    </LoaderWrapper>)
+  }
 
   if (!data || error) {
     return <div>Error! {error.message}</div>

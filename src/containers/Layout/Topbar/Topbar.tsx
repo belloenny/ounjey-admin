@@ -178,7 +178,7 @@ const Topbar = ({refs}: any) => {
                 >
                     <ProfileImg>
                         {
-                            userData.coverImage ? <Image src={userData.coverImage} alt="user" />
+                            userData.coverImage !== undefined && userData.coverImage !== null ? <Image src={userData.coverImage} alt="user" />
                                 : <div style={{
                                     width: 50,
                                     height: 40,
