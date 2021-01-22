@@ -53,9 +53,10 @@ export type CatererProfile = {
 
 export type SubAccount = {
   __typename?: 'SubAccount';
-  id: Scalars['String'];
-  bank_name: Scalars['String'];
-  subaccount_id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
+  bank_name?: Maybe<Scalars['String']>;
+  account_number?: Maybe<Scalars['String']>;
+  subaccount_id?: Maybe<Scalars['String']>;
 };
 
 export type MenuCategory = {
@@ -124,8 +125,14 @@ export type Address = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addSubAccount: CatererProfile;
+  updateSubAccount: CatererProfile;
+  deleteSubAccount: CatererProfile;
   createMenuCategory?: Maybe<MenuCategory>;
+  updateMenuCategory?: Maybe<MenuCategory>;
+  deleteMenuCategory?: Maybe<MenuCategory>;
   addMenuItems?: Maybe<MenuCategory>;
+  removeMenuItems?: Maybe<MenuCategory>;
   updateMenuChoice?: Maybe<MenuChoice>;
   deleteMenuChoice?: Maybe<DeletionResult>;
   createMenu?: Maybe<MenuItem>;
@@ -137,12 +144,38 @@ export type Mutation = {
 };
 
 
+export type MutationAddSubAccountArgs = {
+  newRecord: SubAccountDto;
+};
+
+
+export type MutationUpdateSubAccountArgs = {
+  newRecord: SubAccountDto;
+};
+
+
 export type MutationCreateMenuCategoryArgs = {
   newRecord: MenuCategoryDto;
 };
 
 
+export type MutationUpdateMenuCategoryArgs = {
+  newRecord: MenuCategoryDto;
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteMenuCategoryArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationAddMenuItemsArgs = {
+  update: MenuCategoryUpdateDto;
+};
+
+
+export type MutationRemoveMenuItemsArgs = {
   update: MenuCategoryUpdateDto;
 };
 
@@ -191,6 +224,11 @@ export type MutationDeleteMenuOptionArgs = {
   id: Scalars['String'];
 };
 
+export type SubAccountDto = {
+  account_bank: Scalars['String'];
+  account_number: Scalars['String'];
+};
+
 export type MenuCategoryDto = {
   title: Scalars['String'];
 };
@@ -236,6 +274,22 @@ export type MenuOptionDto = {
   useCheckBoxes?: Maybe<Scalars['Boolean']>;
   menuChoices?: Maybe<Array<MenuChoiceDto>>;
 };
+
+export type AddSubAccountMutationVariables = Exact<{
+  newRecord: SubAccountDto;
+}>;
+
+
+export type AddSubAccountMutation = (
+  { __typename?: 'Mutation' }
+  & { addSubAccount: (
+    { __typename?: 'CatererProfile' }
+    & { subaccount?: Maybe<(
+      { __typename?: 'SubAccount' }
+      & Pick<SubAccount, 'id' | 'bank_name' | 'account_number' | 'subaccount_id'>
+    )> }
+  ) }
+);
 
 export type CreateMenuMutationVariables = Exact<{
   newRecord: MenuItemDto;
@@ -346,6 +400,72 @@ export type UpdateMenuImageMutation = (
   )> }
 );
 
+export type CreateMenuCategoryMutationVariables = Exact<{
+  newRecord: MenuCategoryDto;
+}>;
+
+
+export type CreateMenuCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createMenuCategory?: Maybe<(
+    { __typename?: 'MenuCategory' }
+    & Pick<MenuCategory, 'title'>
+  )> }
+);
+
+export type UpdateMenuCategoryMutationVariables = Exact<{
+  newRecord: MenuCategoryDto;
+  id: Scalars['String'];
+}>;
+
+
+export type UpdateMenuCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateMenuCategory?: Maybe<(
+    { __typename?: 'MenuCategory' }
+    & Pick<MenuCategory, 'title'>
+  )> }
+);
+
+export type DeleteMenuCategoryMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteMenuCategoryMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMenuCategory?: Maybe<(
+    { __typename?: 'MenuCategory' }
+    & Pick<MenuCategory, 'title'>
+  )> }
+);
+
+export type AddMenuItemsMutationVariables = Exact<{
+  update: MenuCategoryUpdateDto;
+}>;
+
+
+export type AddMenuItemsMutation = (
+  { __typename?: 'Mutation' }
+  & { addMenuItems?: Maybe<(
+    { __typename?: 'MenuCategory' }
+    & Pick<MenuCategory, 'title'>
+  )> }
+);
+
+export type RemoveMenuItemsMutationVariables = Exact<{
+  update: MenuCategoryUpdateDto;
+}>;
+
+
+export type RemoveMenuItemsMutation = (
+  { __typename?: 'Mutation' }
+  & { removeMenuItems?: Maybe<(
+    { __typename?: 'MenuCategory' }
+    & Pick<MenuCategory, 'title'>
+  )> }
+);
+
 export type CatererQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -356,7 +476,7 @@ export type CatererQuery = (
     & Pick<CatererProfile, 'id' | 'isApproved' | 'businessPhone' | 'businessEmail' | 'businessName' | 'deliveryFee' | 'coverImage' | 'cuisines' | 'tagLine' | 'createdAt' | 'updatedAt'>
     & { subaccount?: Maybe<(
       { __typename?: 'SubAccount' }
-      & Pick<SubAccount, 'id' | 'subaccount_id'>
+      & Pick<SubAccount, 'id' | 'subaccount_id' | 'bank_name'>
     )> }
   )> }
 );
@@ -405,6 +525,22 @@ export type MenuCategoriesQuery = (
 );
 
 
+export const AddSubAccountDocument = gql`
+    mutation AddSubAccount($newRecord: SubAccountDto!) {
+  addSubAccount(newRecord: $newRecord) {
+    subaccount {
+      id
+      bank_name
+      account_number
+      subaccount_id
+    }
+  }
+}
+    `;
+
+export function useAddSubAccountMutation() {
+  return Urql.useMutation<AddSubAccountMutation, AddSubAccountMutationVariables>(AddSubAccountDocument);
+};
 export const CreateMenuDocument = gql`
     mutation CreateMenu($newRecord: MenuItemDto!) {
   createMenu(newRecord: $newRecord) {
@@ -500,6 +636,61 @@ export const UpdateMenuImageDocument = gql`
 export function useUpdateMenuImageMutation() {
   return Urql.useMutation<UpdateMenuImageMutation, UpdateMenuImageMutationVariables>(UpdateMenuImageDocument);
 };
+export const CreateMenuCategoryDocument = gql`
+    mutation createMenuCategory($newRecord: MenuCategoryDto!) {
+  createMenuCategory(newRecord: $newRecord) {
+    title
+  }
+}
+    `;
+
+export function useCreateMenuCategoryMutation() {
+  return Urql.useMutation<CreateMenuCategoryMutation, CreateMenuCategoryMutationVariables>(CreateMenuCategoryDocument);
+};
+export const UpdateMenuCategoryDocument = gql`
+    mutation updateMenuCategory($newRecord: MenuCategoryDto!, $id: String!) {
+  updateMenuCategory(newRecord: $newRecord, id: $id) {
+    title
+  }
+}
+    `;
+
+export function useUpdateMenuCategoryMutation() {
+  return Urql.useMutation<UpdateMenuCategoryMutation, UpdateMenuCategoryMutationVariables>(UpdateMenuCategoryDocument);
+};
+export const DeleteMenuCategoryDocument = gql`
+    mutation deleteMenuCategory($id: String!) {
+  deleteMenuCategory(id: $id) {
+    title
+  }
+}
+    `;
+
+export function useDeleteMenuCategoryMutation() {
+  return Urql.useMutation<DeleteMenuCategoryMutation, DeleteMenuCategoryMutationVariables>(DeleteMenuCategoryDocument);
+};
+export const AddMenuItemsDocument = gql`
+    mutation addMenuItems($update: MenuCategoryUpdateDto!) {
+  addMenuItems(update: $update) {
+    title
+  }
+}
+    `;
+
+export function useAddMenuItemsMutation() {
+  return Urql.useMutation<AddMenuItemsMutation, AddMenuItemsMutationVariables>(AddMenuItemsDocument);
+};
+export const RemoveMenuItemsDocument = gql`
+    mutation removeMenuItems($update: MenuCategoryUpdateDto!) {
+  removeMenuItems(update: $update) {
+    title
+  }
+}
+    `;
+
+export function useRemoveMenuItemsMutation() {
+  return Urql.useMutation<RemoveMenuItemsMutation, RemoveMenuItemsMutationVariables>(RemoveMenuItemsDocument);
+};
 export const CatererDocument = gql`
     query Caterer {
   caterer {
@@ -508,6 +699,7 @@ export const CatererDocument = gql`
     subaccount {
       id
       subaccount_id
+      bank_name
     }
     businessPhone
     businessEmail

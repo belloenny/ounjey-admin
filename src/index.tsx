@@ -16,7 +16,6 @@ const client = createClient({
     exchanges: [devtoolsExchange, ...defaultExchanges],
     fetchOptions: () => {
         const token = localStorage.getItem("auth_token")
-
         return {
             headers: {
                 authorization: token ? `Bearer ${token}` : ""
@@ -24,13 +23,10 @@ const client = createClient({
         }
     },
 
-    requestPolicy: "network-only",
-
 })
 
 function App() {
     const engine = new Styletron()
-
     return (
         <Provider value={client}>
             <StyletronProvider value={engine}>

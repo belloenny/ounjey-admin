@@ -5,6 +5,7 @@ query Caterer {
         subaccount {
             id
             subaccount_id
+            bank_name
         }
         businessPhone
         businessEmail

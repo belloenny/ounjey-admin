@@ -1,8 +1,10 @@
-import { styled } from "baseui"
-import React, { useCallback } from "react"
-import { CloseIcon } from "../../components/AllSvgIcon"
+import {styled} from "baseui"
+import CategoryUpdate from "containers/CategoryForm/CategoryUpdateForm"
+import SubAccountForm from "containers/Subaccount/SubAccountForm"
+import React, {useCallback} from "react"
+import {CloseIcon} from "../../components/AllSvgIcon"
 import Drawer from "../../components/Drawer/Drawer"
-import { useDrawerDispatch, useDrawerState } from "../../context/DrawerContext"
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
 import CategoryForm from "../CategoryForm/CategoryForm"
 import Sidebar from "../Layout/Sidebar/Sidebar"
 /** Drawer Components */
@@ -14,10 +16,12 @@ const DRAWER_COMPONENTS = {
     PRODUCT_FORM: ProductForm,
     PRODUCT_UPDATE_FORM: ProductUpdateForm,
     CATEGORY_FORM: CategoryForm,
+    CATEGORY_UPDATE_FORM: CategoryUpdate,
+    SUBACCOUNT_FORM: SubAccountForm,
     SIDEBAR: Sidebar,
 }
 
-const CloseButton = styled("button", ({ $theme }) => ({
+const CloseButton = styled("button", ({$theme}) => ({
     ...$theme.typography.fontBold14,
     color: $theme.colors.textNormal,
     lineHeight: 1.2,
@@ -49,7 +53,7 @@ export default function DrawerItems() {
     const drawerComponent = useDrawerState("drawerComponent")
     const data = useDrawerState("data")
     const dispatch = useDrawerDispatch()
-    const closeDrawer = useCallback(() => dispatch({ type: "CLOSE_DRAWER" }), [
+    const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
     if (!drawerComponent) {

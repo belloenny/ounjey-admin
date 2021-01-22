@@ -1,0 +1,10 @@
+mutation AddSubAccount($newRecord: SubAccountDto!) {
+  addSubAccount(newRecord: $newRecord){
+    subaccount{
+      id
+      bank_name
+      account_number
+      subaccount_id
+    }
+  }
+}

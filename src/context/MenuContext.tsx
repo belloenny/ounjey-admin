@@ -1,10 +1,12 @@
-import {MenuOption} from "../graphql/types"
+import {MenuItem, MenuOption} from "../graphql/types"
 import {useCreateContext} from "./create-context"
 
 export interface MenuState {
+    menuItems: MenuItem[]
     menuOptions: MenuOption[]
 }
 const initialState: MenuState = {
+    menuItems: [],
     menuOptions: [],
 }
 type State = typeof initialState
@@ -17,14 +19,23 @@ function reducer(state: State, action: Action) {
                 ...state,
                 menuOptions: [],
             }
+        case "RESET_ITEMS":
+            return {
+                ...state,
+                menuItems: [],
+            }
         case "ADD_OPTION":
             return {
                 ...state,
                 menuOptions: [...state.menuOptions, action.menuOption],
             }
+        case "ADD_ITEMS":
+            return {
+                ...state,
+                menuItems: action.menuItems,
+            }
         case "UPDATE_OPTION":
             const optionid = action.id
-            console.log(action)
             return {
                 ...state,
                 menuOptions: state.menuOptions.map(option => {

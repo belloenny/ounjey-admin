@@ -64,8 +64,7 @@ const ChoiceUpdate: React.FC<Props> = ({data, optionId, closeModal}: {data: Menu
       description,
       menuOptionId: optionId
     }
-    console.log(JSON.stringify(result))
-    console.log(optionId);
+
     menuDispatch({
       type: "UPDATE_CHOICE",
       choiceId: data.id,

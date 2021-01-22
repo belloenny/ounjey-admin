@@ -64,7 +64,7 @@ const img = {
     height: "100%",
 }
 
-function Uploader({onChange, imageURL}: any) {
+function Uploader({onChange, imageURL, setFile}: any) {
     const [files, setFiles] = useState(
         imageURL ? [{name: "demo", preview: imageURL}] : []
     )
@@ -76,6 +76,7 @@ function Uploader({onChange, imageURL}: any) {
                 const reader = new FileReader()
                 acceptedFiles.map((file) => {
                     reader.readAsDataURL(file)
+                    setFile(file)
                     reader.onload = () => {
                         setFiles(
                             acceptedFiles.map((file) =>
@@ -92,13 +93,16 @@ function Uploader({onChange, imageURL}: any) {
         ),
     })
 
-    const thumbs = files.map((file) => (
-        <Thumb key={file.name}>
-            <div style={thumbInner}>
-                <img src={file.preview} style={img} alt={file.name} />
-            </div>
-        </Thumb>
-    ))
+    const thumbs = files.map((file) => {
+
+        return (
+            <Thumb key={file.name}>
+                <div style={thumbInner}>
+                    <img src={file.preview} style={img} alt={file.name} />
+                </div>
+            </Thumb>
+        )
+    })
 
     useEffect(
         () => () => {

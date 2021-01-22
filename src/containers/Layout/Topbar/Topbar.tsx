@@ -14,7 +14,7 @@ import {AuthContext} from "../../../context/auth"
 import {useDrawerDispatch} from "../../../context/DrawerContext"
 import Logoimage from "../../../image/logo.svg"
 import UserImage from "../../../image/user.jpg"
-import {SETTINGS} from "../../../settings/constants"
+import {SETTINGS, SITE_SETTINGS} from "../../../settings/constants"
 import Sidebar from "../Sidebar/Sidebar"
 import {
     AlertDot,
@@ -35,14 +35,13 @@ import {
 
 const data = [
     {
-        title: "Delivery Successful",
-        time: "5m",
-        message: "Order #34567 had been placed",
+        title: "Account Setup",
+        message: "Finish Setting Up your account",
     },
 ]
 const Topbar = ({refs}: any) => {
     const dispatch = useDrawerDispatch()
-    const {signout} = React.useContext(AuthContext)
+    const {signout, userData} = React.useContext(AuthContext)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const openDrawer = useCallback(
         () =>
@@ -145,11 +144,11 @@ const Topbar = ({refs}: any) => {
                     content={({close}) => (
                         <UserDropdowItem>
                             <NavLink
-                                to={SETTINGS}
+                                to={SITE_SETTINGS}
                                 exact={false}
                                 onClick={close}
                             >
-                                Settings
+                                Account
                             </NavLink>
                             <LogoutBtn
                                 onClick={() => {
@@ -178,7 +177,22 @@ const Topbar = ({refs}: any) => {
                     }}
                 >
                     <ProfileImg>
-                        <Image src={UserImage} alt="user" />
+                        {
+                            userData.coverImage ? <Image src={userData.coverImage} alt="user" />
+                                : <div style={{
+                                    width: 50,
+                                    height: 40,
+                                    paddingTop: 9,
+                                    color: "white",
+                                    borderRadius: "50%",
+                                    fontWeight: 900,
+                                    textAlign: "center",
+                                    backgroundColor: "#FC3838"
+                                }}>
+
+                                    Ou.
+                           </div>
+                        }
                     </ProfileImg>
                 </Popover>
             </TopbarRightSide>

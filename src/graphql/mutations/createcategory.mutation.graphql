@@ -1,7 +1,0 @@
-# mutation CreateMenu($title: String!, $user_id: String) {
-#     createMenu(
-#         data: { title: $title, belongs_to: { connect: { user_id: $user_id } } }
-#     ) {
-#         id
-#     }
-# }

@@ -178,13 +178,18 @@ const MenuItemForm = ({isUpdateForm, menuItemId}: {isUpdateForm?: boolean, menuI
             </Popover>
             <MenuGrid>
                 {menuOptions.length !== 0 ? (
+                    //@ts-ignore
                     menuOptions.map((option) => (
                         <div key={option.id}>
                             <List>
                                 <ListTitle>
                                     <div
                                         style={{
-                                            cursor: "pointer"
+                                            cursor: "pointer",
+                                            color: "#8A6AFC",
+                                            textDecoration: "underline",
+                                            fontSize: 18,
+                                            fontWeight: 900,
                                         }}
                                         onClick={() =>
                                             openModal({
@@ -349,84 +354,86 @@ const MenuItemForm = ({isUpdateForm, menuItemId}: {isUpdateForm?: boolean, menuI
                                         )
                                     }
                                 </Popover>
-                                {option.menuChoices.length !== 0 ? (
-                                    option.menuChoices.map((choice) => (
-                                        <Card key={choice.id}
 
-                                        >
-                                            <div
-                                                onClick={() =>
-                                                    openModal({
-                                                        config: {
-                                                            className: 'customModal',
-                                                            disableDragging: false,
-                                                            enableResizing: {
-                                                                bottom: true,
-                                                                bottomLeft: true,
-                                                                bottomRight: true,
-                                                                left: true,
-                                                                right: true,
-                                                                top: true,
-                                                                topLeft: true,
-                                                                topRight: true,
+                                {
+                                    //@ts-ignore
+                                    option.menuChoices.length !== 0 ? (
+                                        option.menuChoices.map((choice) => (
+                                            <Card key={choice.name}
+                                            >
+                                                <div
+                                                    onClick={() =>
+                                                        openModal({
+                                                            config: {
+                                                                className: 'customModal',
+                                                                disableDragging: false,
+                                                                enableResizing: {
+                                                                    bottom: true,
+                                                                    bottomLeft: true,
+                                                                    bottomRight: true,
+                                                                    left: true,
+                                                                    right: true,
+                                                                    top: true,
+                                                                    topLeft: true,
+                                                                    topRight: true,
+                                                                },
+                                                                width: 480,
+                                                                height: 650,
+                                                                animationFrom: {transform: 'scale(0.3)'}, // react-spring <Spring from={}> props value
+                                                                animationTo: {transform: 'scale(1)'}, //  react-spring <Spring to={}> props value
+                                                                transition: {
+                                                                    mass: 1,
+                                                                    tension: 130,
+                                                                    friction: 26,
+                                                                }, // react-spring config props
                                                             },
-                                                            width: 480,
-                                                            height: 650,
-                                                            animationFrom: {transform: 'scale(0.3)'}, // react-spring <Spring from={}> props value
-                                                            animationTo: {transform: 'scale(1)'}, //  react-spring <Spring to={}> props value
-                                                            transition: {
-                                                                mass: 1,
-                                                                tension: 130,
-                                                                friction: 26,
-                                                            }, // react-spring config props
-                                                        },
-                                                        withRnd: false,
-                                                        overlayClassName: 'customeOverlayClass',
-                                                        closeOnClickOutside: false,
-                                                        component: ChoiceUpdate,
-                                                        componentProps: {data: choice, refetch: data.refetch, optionId: option.id, closeModal},
-                                                    })
-                                                }
-                                            >
-
-                                                {choice.name}{" "}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    float: "right",
-                                                    cursor: "pointer",
-                                                    position: "absolute",
-                                                    right: 11,
-                                                    bottom: 4
-                                                }}
-                                                onClick={() => {
-                                                    dispatch({
-                                                        type: "DELETE_CHOICE",
-                                                        id: choice.id,
-                                                    })
-                                                    if (isUpdateForm) {
-                                                        deleteChoice({
-                                                            id: choice.id
-                                                        }).then(() => data.refetch())
+                                                            withRnd: false,
+                                                            overlayClassName: 'customeOverlayClass',
+                                                            closeOnClickOutside: false,
+                                                            component: ChoiceUpdate,
+                                                            componentProps: {data: choice, refetch: data.refetch, optionId: option.id, closeModal},
+                                                        })
                                                     }
-                                                }
+                                                >
 
-                                                }
+                                                    {choice.name}{" "}
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        float: "right",
+                                                        cursor: "pointer",
+                                                        position: "absolute",
+                                                        right: 11,
+                                                        bottom: 4
+                                                    }}
+                                                    onClick={() => {
+                                                        dispatch({
+                                                            type: "DELETE_CHOICE",
+                                                            id: choice.id,
+                                                        })
+                                                        if (isUpdateForm) {
+                                                            deleteChoice({
+                                                                id: choice.id
+                                                            }).then(() => data.refetch())
+                                                        }
+                                                    }
+
+                                                    }
+                                                >
+                                                    <Delete />
+                                                </div>
+                                            </Card>
+                                        ))
+                                    ) : (
+                                            <p
+                                                style={{
+                                                    marginLeft: "9px",
+                                                    color: "GrayText",
+                                                }}
                                             >
-                                                <Delete />
-                                            </div>
-                                        </Card>
-                                    ))
-                                ) : (
-                                        <p
-                                            style={{
-                                                marginLeft: "9px",
-                                                color: "GrayText",
-                                            }}
-                                        >
-                                            You don't have any choices
-                                        </p>
-                                    )}
+                                                You don't have any choices
+                                            </p>
+                                        )}
                             </List>
                         </div>
                     ))

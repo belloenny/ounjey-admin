@@ -1,4 +1,4 @@
-import { createTheme, lightThemePrimitives } from "baseui";
+import {createTheme, lightThemePrimitives} from "baseui";
 
 export const theme = createTheme(
   {

@@ -50,14 +50,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
             onClick={openDrawer}
         >
             <ProductImageWrapper>
-                <Image url={image} className="product-image" />
+                <Image url={image} style={{width: "100%", objectFit: "cover"}} className="product-image" />
             </ProductImageWrapper>
             <ProductInfo>
                 <ProductTitle>{title}</ProductTitle>
                 <ProductMeta>
                     <ProductPriceWrapper>
                         <ProductPrice>
-                            {currency}
+                            {currency} {" "}
                             {price}
                         </ProductPrice>
                     </ProductPriceWrapper>

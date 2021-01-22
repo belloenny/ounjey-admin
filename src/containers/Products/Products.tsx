@@ -22,6 +22,7 @@ import {MenuIcon, ArrowLeftRound} from "../../components/AllSvgIcon"
 import Sidebar from "../Layout/Sidebar/Sidebar"
 import {DrawerWrapper, DrawerIcon, CloseButton} from "../Layout/Topbar/Topbar.style"
 import Select from "components/Select/Select"
+import {useMenuDispatch} from "context/MenuContext"
 
 export const ProductsRow = styled("div", ({$theme}) => ({
     display: "flex",
@@ -93,22 +94,25 @@ const priceSelectOptions = [
 export default function Products() {
     // const { data, error, refetch, fetchMore } = useQuery(GET_PRODUCTS);
     const [result, fetchMore] = useMenuItemsQuery()
-    const dispatch = useDrawerDispatch()
+    const dispatch = useMenuDispatch()
     const isOpen = useDrawerState("isOpen")
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [type] = useState([])
     const [priceOrder] = useState([])
     const [search] = useState([])
-    // React.useEffect(() => {
-    //     console.log(`fetchMore Function: ${fetchMore}`);
 
-    // }, [])
-    const openDrawer = React.useCallback(
-        () =>
-            dispatch({type: "OPEN_DRAWER", drawerComponent: "PRODUCT_FORM", data: fetchMore}),
-        [dispatch]
-    )
+    // const openDrawer = React.useCallback(
+    //     () =>
+    //         dispatch({type: "OPEN_DRAWER", drawerComponent: "PRODUCT_FORM", data: fetchMore}),
+    //     [dispatch]
+    // )
     const {data, fetching, error} = result
+    React.useEffect(() => {
+        if (data) {
+            dispatch({type: "ADD_ITEMS", menuItems: data.caterer.menuItems})
+        }
+
+    }, [data])
     if (error) {
         return <div>Error! {error.message}</div>
     }
@@ -119,7 +123,9 @@ export default function Products() {
     //     console.log(`refreshed`)
     // }
     function loadMore() {
-        console.log(`refreshed`)
+        fetchMore({
+            requestPolicy: "network-only"
+        })
         //   toggleLoading(true);
         //   fetchMore({
         //     variables: {
@@ -151,33 +157,33 @@ export default function Products() {
                         <Col md={10} xs={12}>
                             <Row>
                                 <Col md={3} xs={12}>
-                                    <Select
+                                    {/* <Select
                                         options={typeSelectOptions}
                                         labelKey="label"
                                         valueKey="value"
                                         placeholder="Category Type"
                                         value={type}
                                         searchable={false}
-                                    />
+                                    /> */}
                                 </Col>
 
                                 <Col md={3} xs={12}>
-                                    <Select
+                                    {/* <Select
                                         options={priceSelectOptions}
                                         labelKey="label"
                                         valueKey="value"
                                         value={priceOrder}
                                         placeholder="Price"
                                         searchable={false}
-                                    />
+                                    /> */}
                                 </Col>
 
                                 <Col md={6} xs={12}>
-                                    <Input
+                                    {/* <Input
                                         value={search}
                                         placeholder="Ex: Search By Name"
                                         clearable
-                                    />
+                                    /> */}
                                 </Col>
                             </Row>
                         </Col>
@@ -208,7 +214,7 @@ export default function Products() {
                                                         image={item.images && item.images.length !== 0 ? item.images[0].src : ""}
                                                         currency={CURRENCY}
                                                         price={item.pricePerPlate}
-                                                        refetch={fetchMore}
+                                                        refetch={loadMore}
                                                         data={item}
                                                     />
                                                 </Fade>

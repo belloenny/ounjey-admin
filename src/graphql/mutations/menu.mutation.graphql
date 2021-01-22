@@ -1,0 +1,86 @@
+
+mutation CreateMenu(
+  $newRecord: MenuItemDto!
+){
+  createMenu (
+    newRecord: $newRecord
+    ){
+      id
+    }
+}
+
+
+mutation DeleteMenuItem($id:String!) {
+  deleteMenu(id:$id){
+    id
+  }
+}
+
+mutation DeleteOption($id:String!) {
+  deleteMenuOption(id:$id){
+    data
+  }
+}
+
+mutation DeleteMenuChoice($id:String!) {
+  deleteMenuChoice(id:$id){
+    data
+  }
+}
+
+mutation updateMenuItem($newRecord: MenuItemDto!, $id: String!){
+  updateMenu(newRecord:$newRecord,id: $id) {
+    id
+    title
+    description
+    updatedAt
+  }
+}
+
+mutation updateMenuOption($newRecord: MenuOptionDto!, $id: String!){
+  updateMenuOption(newRecord:$newRecord,id: $id) {
+    id
+    title
+    description
+  }
+}
+
+mutation updateMenuChoice($newRecord: MenuChoiceDto!, $id: String!){
+  updateMenuChoice(newRecord:$newRecord,id: $id) {
+    id
+    name
+    description
+  }
+}
+mutation UpdateMenuImage($entityId:String!, $image: String!, $isDuplicatedItem: Boolean!){
+  updateMenuImage(entityId: $entityId, image: $image, isDuplicatedItem: $isDuplicatedItem){
+    src
+  }
+}
+
+mutation createMenuCategory($newRecord: MenuCategoryDto!){
+  createMenuCategory(newRecord: $newRecord){
+    title
+  }
+}
+mutation updateMenuCategory($newRecord: MenuCategoryDto!, $id: String!){
+  updateMenuCategory(newRecord: $newRecord, id: $id){
+    title
+  }
+}
+mutation deleteMenuCategory($id: String!){
+  deleteMenuCategory(id: $id){
+    title
+  }
+}
+mutation addMenuItems($update: MenuCategoryUpdateDto!){
+  addMenuItems(update: $update){
+    title
+  }
+}
+mutation removeMenuItems($update: MenuCategoryUpdateDto!){
+  removeMenuItems(update: $update){
+    title
+  }
+}
+

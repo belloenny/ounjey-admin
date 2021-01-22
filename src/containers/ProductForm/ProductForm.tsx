@@ -81,7 +81,9 @@ const AddProduct: React.FC<Props> = () => {
             image
         }: MenuItemDto = data
         const images: File[] = data.images
+        //@ts-ignore
         if (menuOptions.length !== 0) {
+            //@ts-ignore
             const options: MenuOptionDto[] = menuOptions.map(
                 (option: MenuOptionDto) => {
                     let newOption

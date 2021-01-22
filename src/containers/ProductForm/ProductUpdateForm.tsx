@@ -100,7 +100,7 @@ const AddProduct: React.FC<Props> = () => {
                 <DrawerTitle>Update Menu Item</DrawerTitle>
             </DrawerTitleWrapper>
 
-            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}} enctype="multipart/form-data">
+            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}}>
                 <Scrollbars
                     autoHide
                     renderView={(props) => (

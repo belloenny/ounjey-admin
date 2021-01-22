@@ -5,6 +5,7 @@ import {
     OrderIcon,
     ProductIcon,
     SettingIcon,
+    DashboardIcon,
     SidebarCategoryIcon
 } from "../../../components/AllSvgIcon"
 import {AuthContext} from "../../../context/auth"
@@ -13,7 +14,9 @@ import {
 
     ORDERS,
     PRODUCTS,
-    SETTINGS
+    SETTINGS,
+    SITE_SETTINGS,
+    SUBACCOUNT
 } from "../../../settings/constants"
 import {
     LogoutBtn,
@@ -43,14 +46,20 @@ const sidebarMenus = [
         icon: <SidebarCategoryIcon />,
     },
     {
+        name: "SubAccount",
+        path: SUBACCOUNT,
+        exact: false,
+        icon: <DashboardIcon />,
+    },
+    {
         name: "Orders",
         path: ORDERS,
         exact: false,
         icon: <OrderIcon />,
     },
     {
-        name: "Settings",
-        path: SETTINGS,
+        name: "Account",
+        path: SITE_SETTINGS,
         exact: false,
         icon: <SettingIcon />,
     },

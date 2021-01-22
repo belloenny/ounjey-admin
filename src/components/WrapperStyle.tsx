@@ -1,4 +1,4 @@
-import { styled } from 'baseui';
+import {styled} from 'baseui';
 
 export const Wrapper = styled('div', () => ({
   backgroundColor: '#ffffff',
@@ -20,13 +20,13 @@ export const Header = styled('header', () => ({
   },
 }));
 
-export const Heading = styled('h2', ({ $theme }) => ({
+export const Heading = styled('h1', ({$theme}) => ({
   ...$theme.typography.fontBold18,
   color: $theme.colors.textDark,
   margin: 0,
 }));
 
-export const ButtonWrapper = styled('div', ({ $theme }) => ({
+export const ButtonWrapper = styled('div', ({$theme}) => ({
   display: 'flex',
   justifyContent: 'space-between',
   paddingTop: '20px',

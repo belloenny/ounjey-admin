@@ -1,99 +1,63 @@
+import {Button, KIND} from "baseui/button"
+import {Input} from "baseui/input"
+import DrawerBox from "components/DrawerBox/DrawerBox"
+import {FormFields, FormLabel} from "components/FormFields/FormFields"
 import React, {useCallback} from "react"
+import {Row, Col} from "react-flexbox-grid"
 import {useForm} from "react-hook-form"
-import {AuthContext} from "../../context/auth"
 import {useDrawerDispatch} from "../../context/DrawerContext"
+import {Scrollbars} from "react-custom-scrollbars"
 import {
+    ButtonGroup,
     DrawerTitle,
-    DrawerTitleWrapper
+    DrawerTitleWrapper,
+    FieldDetails,
+    Form
 } from "../DrawerItems/DrawerItems.style"
+import {useCreateMenuCategoryMutation} from "graphql/types"
 
-const options = [
-    {value: "grocery", name: "Grocery", id: "1"},
-    {value: "women-cloths", name: "Women Cloths", id: "2"},
-    {value: "bags", name: "Bags", id: "3"},
-    {value: "makeup", name: "Makeup", id: "4"},
-]
+
 type Props = any
 
-const AddCategory: React.FC<Props> = (props) => {
+const AddCategory: React.FC<Props> = () => {
     const dispatch = useDrawerDispatch()
     const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
-
     const {register, handleSubmit} = useForm()
-    // const [category, setCategory] = useState([])
-    const {userData} = React.useContext(AuthContext)
-    React.useEffect(() => {
-        register({name: "parent"})
-        register({name: "path"})
-    }, [register])
+    const [, createMenuCategory] = useCreateMenuCategoryMutation()
 
-    // const onSubmit = async ({ name }) => {
-    //     const res = await createMenu({
-    //         title: name,
-    //         user_id: userData.caterer.user_id,
-    //     })
-    //     if (!res.data || res.error) {
-    //     }
-    //     closeDrawer()
-    // }
-    // const handleChange = ({ value }) => {
-    //     setValue("parent", value)
-    //     setCategory(value)
-    // }
-    // const handleUploader = (path) => {
-    //     setValue("path", path)
-    // }
 
+    const onSubmit = async ({title}: {title: string}) => {
+        await createMenuCategory({
+            newRecord: {
+                title
+            }
+        }).then(() => closeDrawer())
+    }
     return (
         <>
             <DrawerTitleWrapper>
                 <DrawerTitle>Add Category</DrawerTitle>
             </DrawerTitleWrapper>
 
-            {/* <Form onSubmit={handleSubmit(onSubmit)} style={{ height: "100%" }}>
+            <Form onSubmit={handleSubmit(onSubmit)} style={{height: "100%"}}>
                 <Scrollbars
                     autoHide
                     renderView={(props) => (
                         <div
                             {...props}
-                            style={{ ...props.style, overflowX: "hidden" }}
+                            style={{...props.style, overflowX: "hidden"}}
                         />
                     )}
                     renderTrackHorizontal={(props) => (
                         <div
                             {...props}
-                            style={{ display: "none" }}
+                            style={{display: "none"}}
                             className="track-horizontal"
                         />
                     )}
                 >
-                    <Row>
-                        <Col lg={4}>
-                            <FieldDetails>Upload Menu Image</FieldDetails>
-                        </Col>
-                        <Col lg={8}>
-                            <DrawerBox
-                                overrides={{
-                                    Block: {
-                                        style: {
-                                            width: "100%",
-                                            height: "auto",
-                                            padding: "30px",
-                                            borderRadius: "3px",
-                                            backgroundColor: "#ffffff",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                        },
-                                    },
-                                }}
-                            >
-                                <Uploader onChange={handleUploader} />
-                            </DrawerBox>
-                        </Col>
-                    </Row>
                     <Row>
                         <Col lg={4}>
                             <FieldDetails>
@@ -110,7 +74,7 @@ const AddCategory: React.FC<Props> = (props) => {
                                             required: true,
                                             maxLength: 20,
                                         })}
-                                        name="name"
+                                        name="title"
                                     />
                                 </FormFields>
                             </DrawerBox>
@@ -124,7 +88,7 @@ const AddCategory: React.FC<Props> = (props) => {
                         onClick={closeDrawer}
                         overrides={{
                             BaseButton: {
-                                style: ({ $theme }) => ({
+                                style: ({$theme}) => ({
                                     width: "50%",
                                     borderTopLeftRadius: "3px",
                                     borderTopRightRadius: "3px",
@@ -143,7 +107,7 @@ const AddCategory: React.FC<Props> = (props) => {
                         type="submit"
                         overrides={{
                             BaseButton: {
-                                style: ({ $theme }) => ({
+                                style: ({ }) => ({
                                     width: "50%",
                                     borderTopLeftRadius: "3px",
                                     borderTopRightRadius: "3px",
@@ -156,7 +120,7 @@ const AddCategory: React.FC<Props> = (props) => {
                         Create Category
                     </Button>
                 </ButtonGroup>
-            </Form> */}
+            </Form>
         </>
     )
 }

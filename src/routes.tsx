@@ -10,13 +10,15 @@ import {
     PRODUCTS,
     SETTINGS,
     SIGNUP,
-    SITE_SETTINGS
+    SITE_SETTINGS,
+    SUBACCOUNT
 } from "./settings/constants"
 const Products = lazy(() => import("./containers/Products/Products"))
 const AdminLayout = lazy(() => import("./containers/Layout/Layout"))
 const Dashboard = lazy(() => import("./containers/Dashboard/Dashboard"))
 const Category = lazy(() => import("./containers/Category/Category"))
 const Orders = lazy(() => import("./containers/Orders/Orders"))
+const SubAccount = lazy(() => import("./containers/Subaccount/SubAccount"))
 const Settings = lazy(() => import("./containers/Settings/Settings"))
 const SiteSettingForm = lazy(
     () => import("./containers/SiteSettingForm/SiteSettingForm")
@@ -79,6 +81,13 @@ const Routes = () => {
                         <AdminLayout>
                             <Suspense fallback={<InLineLoader />}>
                                 <Category />
+                            </Suspense>
+                        </AdminLayout>
+                    </PrivateRoute>
+                    <PrivateRoute path={SUBACCOUNT} exact>
+                        <AdminLayout>
+                            <Suspense fallback={<InLineLoader />}>
+                                <SubAccount />
                             </Suspense>
                         </AdminLayout>
                     </PrivateRoute>
