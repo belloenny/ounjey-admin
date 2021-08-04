@@ -20,7 +20,7 @@ import {Plus} from "assets/icons/Plus"
 type Props = any
 
 
-const CategoryUpdate: React.FC<Props> = ({data, closeModal}: {data: MenuCategory, closeModal: () => void}) => {
+const CategoryUpdate: React.FC<Props> = ({data, closeModal,refetch}: {data: MenuCategory, closeModal: () => void, refetch: () => void }) => {
   const [, addMenuItems] = useAddMenuItemsMutation()
   const menuItems = useMenuState("menuItems")
   const [, removeItems] = useRemoveMenuItemsMutation()
@@ -34,7 +34,9 @@ const CategoryUpdate: React.FC<Props> = ({data, closeModal}: {data: MenuCategory
         id: data.id,
         menuIds: ids
       }
-    }).then(res => closeModal())
+    }).then(res => {
+      refetch()
+      closeModal()})
   }
   const handleDelete = (id: string) => {
     removeItems({
@@ -42,7 +44,9 @@ const CategoryUpdate: React.FC<Props> = ({data, closeModal}: {data: MenuCategory
         id: data.id,
         menuIds: [id]
       }
-    }).then(res => closeModal())
+    }).then(res => {
+      refetch()
+      closeModal()})
   }
   return (
     <>

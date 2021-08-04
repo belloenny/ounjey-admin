@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {useDrawerDispatch} from "../../context/DrawerContext"
 import {
     Image,
@@ -43,6 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }),
         [dispatch, data]
     )
+
     return (
         <ProductCardWrapper
             {...props}

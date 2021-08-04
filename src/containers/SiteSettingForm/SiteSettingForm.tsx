@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import Uploader from '../../components/Uploader/Uploader';
+import Uploader from "../../components/Uploader/Uploader"
 import Input from '../../components/Input/Input';
 import {Textarea} from '../../components/Textarea/Textarea';
 import Select from '../../components/Select/Select';
@@ -31,18 +31,23 @@ const SiteSettingsForm: React.FC<Props> = () => {
   });
 
 
-  const handleFile = useCallback((file) => {
-    setFile(file)
-    const result = new FormData()
-    result.append('image', file)
-    postData(`${process.env.REACT_APP_API_URL}/upload-cover-image/${userData.id}`, result)
-  }, [file, setFile])
+  const handleUploader = (path) => {
+    console.log(`path is ${path}`)
+    axios.post(`${process.env.REACT_APP_API_URL}/upload-cover-image/${userData.id}`, {path} ,{
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+
+      },
+    })
+  }
 
 
 
 
 
   const submit = (result) => {
+    console.log(result);
+
     axios.put(`${process.env.REACT_APP_API_URL}/caterers/${userData.id}`, {
       newRecord: result
     }, {
@@ -61,7 +66,10 @@ const SiteSettingsForm: React.FC<Props> = () => {
 
           <Col md={8}>
             <DrawerBox>
-              <Uploader setFile={handleFile} />
+            <Uploader
+                                    onChange={handleUploader}
+                                    imageURL={userData.coverImage && userData.coverImage}
+                                />
             </DrawerBox>
           </Col>
         </Row>
@@ -127,7 +135,7 @@ const SiteSettingsForm: React.FC<Props> = () => {
                   }}
                 >
                   Update
-                    </Button>
+                </Button>
               </FormFields>
             </DrawerBox>
           </Col>

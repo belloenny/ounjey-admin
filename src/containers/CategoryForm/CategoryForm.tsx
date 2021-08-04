@@ -5,7 +5,7 @@ import {FormFields, FormLabel} from "components/FormFields/FormFields"
 import React, {useCallback} from "react"
 import {Row, Col} from "react-flexbox-grid"
 import {useForm} from "react-hook-form"
-import {useDrawerDispatch} from "../../context/DrawerContext"
+import {useDrawerDispatch, useDrawerState} from "../../context/DrawerContext"
 import {Scrollbars} from "react-custom-scrollbars"
 import {
     ButtonGroup,
@@ -21,6 +21,7 @@ type Props = any
 
 const AddCategory: React.FC<Props> = () => {
     const dispatch = useDrawerDispatch()
+    const prop = useDrawerState('data')
     const closeDrawer = useCallback(() => dispatch({type: "CLOSE_DRAWER"}), [
         dispatch,
     ])
@@ -33,7 +34,10 @@ const AddCategory: React.FC<Props> = () => {
             newRecord: {
                 title
             }
-        }).then(() => closeDrawer())
+        }).then(() => {
+            prop.refetch()
+            closeDrawer()
+        })
     }
     return (
         <>

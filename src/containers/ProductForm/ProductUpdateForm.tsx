@@ -90,7 +90,11 @@ const AddProduct: React.FC<Props> = () => {
         updateMenu({
             newRecord,
             id: data.id
-        }).then(() => closeDrawer())
+        }).then(() => {
+            //@ts-ignore
+            data.refetch()
+            closeDrawer()
+        })
 
     }
     return (
@@ -370,7 +374,7 @@ const AddProduct: React.FC<Props> = () => {
                     <Row>
                         <Col lg={4}>
                             <FieldDetails>
-                                If You Wish To Duplicate This MenuItem You can Do do by clicking the button
+                                If You Wish To Duplicate This MenuItem You can Do so by clicking the button
                             </FieldDetails>
                         </Col>
                         <Col lg={8}>

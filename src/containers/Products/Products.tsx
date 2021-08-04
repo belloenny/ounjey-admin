@@ -92,8 +92,7 @@ const priceSelectOptions = [
 ]
 
 export default function Products() {
-    // const { data, error, refetch, fetchMore } = useQuery(GET_PRODUCTS);
-    const [result, fetchMore] = useMenuItemsQuery()
+    const [result, fetchMore] = useMenuItemsQuery({requestPolicy: "network-only"})
     const dispatch = useMenuDispatch()
     const isOpen = useDrawerState("isOpen")
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -101,28 +100,21 @@ export default function Products() {
     const [priceOrder] = useState([])
     const [search] = useState([])
 
-    // const openDrawer = React.useCallback(
-    //     () =>
-    //         dispatch({type: "OPEN_DRAWER", drawerComponent: "PRODUCT_FORM", data: fetchMore}),
-    //     [dispatch]
-    // )
     const {data, fetching, error} = result
     React.useEffect(() => {
         if (data) {
             dispatch({type: "ADD_ITEMS", menuItems: data.caterer.menuItems})
         }
 
+
     }, [data])
     if (error) {
         return <div>Error! {error.message}</div>
     }
-    // if (!isOpen) {
-    //     fetchMore({
-    //         requestPolicy: 'network-only'
-    //     })
-    //     console.log(`refreshed`)
-    // }
+
     function loadMore() {
+        console.log(`im here`);
+
         fetchMore({
             requestPolicy: "network-only"
         })

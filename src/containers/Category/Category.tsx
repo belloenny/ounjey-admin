@@ -42,13 +42,15 @@ export default function Category() {
     const [, deleteMenuCategory] = useDeleteMenuCategoryMutation()
     const [] = useState([]);
     const [checkedId, setCheckedId] = useState([]);
-    const [result] = useMenuCategoriesQuery()
+    const [result,refetch] = useMenuCategoriesQuery({requestPolicy: "network-only"})
     const {data} = result
 
     const [checked, setChecked] = useState(false)
     const openDrawer = useCallback(
         () =>
-            dispatch({type: "OPEN_DRAWER", drawerComponent: "CATEGORY_FORM"}),
+            dispatch({type: "OPEN_DRAWER", drawerComponent: "CATEGORY_FORM",data: {
+                refetch
+            },}),
         [dispatch]
     )
 
@@ -260,7 +262,8 @@ export default function Category() {
                                                                                 title: row[1],
                                                                                 menuItems: row[2]
                                                                             },
-                                                                            closeModal: closeModal
+                                                                            closeModal: closeModal,
+                                                                            refetch
                                                                         },
                                                                     })
                                                                 }    >

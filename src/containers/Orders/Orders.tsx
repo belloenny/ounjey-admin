@@ -61,11 +61,7 @@ const statusSelectOptions = [
     {value: "delivered", label: "Delivered"},
     {value: "archived", label: "Archived"},
 ]
-const limitSelectOptions = [
-    {value: 7, label: "Last 7 orders"},
-    {value: 15, label: "Last 15 orders"},
-    {value: 30, label: "Last 30 orders"},
-]
+
 
 export default function Orders() {
     // const [checkedId, setCheckedId] = useState([]);
@@ -73,12 +69,50 @@ export default function Orders() {
     const [orders, setOrders] = useState<[]>()
     const [status, setStatus] = React.useState()
     const fetchCatererOrders = async () => {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/caterers/orders`, {
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/graphql`, {
+            query: `
+                {
+                    orders {
+                        id
+                        customerName
+                        customerEmail
+                        deliveryAddress
+                        totalPrice
+                        paymentMethod
+                        customerEmail
+                        status
+                        archived
+                        catererId
+                        userId
+                        createdAt
+                        updatedAt
+                        countryCode
+                        menuItems {
+                            id
+                            title
+                            quantity
+                            totalPrice
+                            optionsPicked{
+                                title
+                                choiceAmount
+                                choicesPicked {
+                                    name
+                                    choicePrice
+                                }
+                            }
+                        }
+                    }
+                }
+            `
+        }, {
+
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem("auth_token")}`
             }
         })
-        return res.data.data
+        console.log(res.data);
+
+        return res.data.data.orders;
     }
 
     const [checkedId, setCheckedId] = useState([]);
@@ -102,6 +136,7 @@ export default function Orders() {
         })
         fetchCatererOrders().then(res => {
             if (res !== null) {
+                console.log(res)
                 setOrders(res)
                 setCheckedId([])
                 setChecked(false)
@@ -276,18 +311,18 @@ export default function Orders() {
                                                                             order: {
                                                                                 id: row[0],
                                                                                 customerName: row[1],
-                                                                                archived: row[2],
-                                                                                catererId: row[3],
-                                                                                userId: row[4],
-                                                                                createdAt: row[5],
-                                                                                updatedAt: row[6],
-                                                                                customerEmail: row[7],
-                                                                                countryCode: row[8],
-                                                                                status: row[9],
-                                                                                paymentMethod: row[10],
-                                                                                totalPrice: row[11],
-                                                                                menuItems: row[12],
-                                                                                deliveryAddress: row[13]
+                                                                                archived: row[7],
+                                                                                catererId: row[8],
+                                                                                userId: row[9],
+                                                                                createdAt: row[10],
+                                                                                updatedAt: row[11],
+                                                                                customerEmail: row[2],
+                                                                                countryCode: row[12],
+                                                                                status: row[6],
+                                                                                paymentMethod: row[5],
+                                                                                totalPrice: row[4],
+                                                                                menuItems: row[13],
+                                                                                deliveryAddress: row[3]
 
                                                                             },
                                                                             closeModal: closeModal
@@ -300,37 +335,39 @@ export default function Orders() {
                                                             </div>
                                                         </StyledCell>
                                                         <StyledCell>
-                                                            {row[1]}
+                                                            {row[1]
+
+                                                            }
                                                         </StyledCell>
                                                         <StyledCell>
-                                                            {row[7]}
+                                                            {row[2]}
                                                         </StyledCell>
                                                         <StyledCell>
-                                                            {row[13]}
+                                                            {row[3]}
                                                         </StyledCell>
                                                         <StyledCell>
-                                                            {row[11]}
+                                                            {row[4]}
                                                         </StyledCell>
                                                         <StyledCell>
-                                                            {row[10]}
+                                                            {row[5]}
                                                         </StyledCell>
                                                         <StyledCell>
                                                             {"07 365 241"}
                                                         </StyledCell>
                                                         <StyledCell>
-                                                            {row[9]}
+                                                            {row[6]}
                                                         </StyledCell>
                                                     </React.Fragment>
                                                 ))
                                         ) : (
-                                                <NoResult
-                                                    hideButton={false}
-                                                    style={{
-                                                        gridColumnStart: "1",
-                                                        gridColumnEnd: "one",
-                                                    }}
-                                                />
-                                            )
+                                            <NoResult
+                                                hideButton={false}
+                                                style={{
+                                                    gridColumnStart: "1",
+                                                    gridColumnEnd: "one",
+                                                }}
+                                            />
+                                        )
                                     ) : null
                                 }
                             </StyledTable>

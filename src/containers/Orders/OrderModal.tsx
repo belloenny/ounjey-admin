@@ -67,17 +67,12 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
             <FormattedMessage id="backHomeBtn" defaultMessage="Back to Home" />
           </a>
         </Link> */}
-
           <OrderInfo>
             <BlockTitle>
-
               Order Details
             </BlockTitle>
-
             <Text>
-
             </Text>
-
             <InfoBlockWrapper>
               <InfoBlock>
                 <Text bold className="title">
@@ -85,7 +80,6 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
               </Text>
                 <Text>{order.id}</Text>
               </InfoBlock>
-
               {/* <InfoBlock>
                 <Text bold className="title">
                   Date Created
@@ -113,14 +107,9 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
               </InfoBlock> */}
             </InfoBlockWrapper>
           </OrderInfo>
-
           <OrderDetails>
             <BlockTitle>
-
             </BlockTitle>
-
-
-
             <ListItem>
               <ListTitle>
                 <Text bold>
@@ -138,7 +127,6 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
                 <Text bold className="title">
                   Date Created
               </Text>
-
               </ListTitle>
               <ListDes>
                 <Text>{
@@ -152,7 +140,6 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
                 <Text bold className="title">
                   Date Created
               </Text>
-
               </ListTitle>
               <ListDes>
                 <Text>{
@@ -166,19 +153,16 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
                 <Text bold className="title">
                   Total Amount
               </Text>
-
               </ListTitle>
               <ListDes>
                 <Text>{order.totalPrice}</Text>
               </ListDes>
             </ListItem>
           </OrderDetails>
-
           <TotalAmount>
             <BlockTitle>
               Price
             </BlockTitle>
-
             <ListItem>
               <ListTitle>
                 <Text bold>
@@ -201,9 +185,6 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
               </ListDes>
             </ListItem>
           </TotalAmount>
-
-
-
           <TotalAmount>
             <BlockTitle>
               Menu Item
@@ -220,9 +201,8 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
             </ListItem>
             {
               order.menuItems.length !== 0 ? (
-
                 order.menuItems.map(item => (
-                  <MenuSection>
+                  <MenuSection key={item.id}>
                     <ListItem>
                       <ListTitle>
                         <Text bold>
@@ -256,7 +236,7 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
 
 
                     {
-                      item.optionsPicked !== undefined && item.optionsPicked.length !== 0 ? (
+                      item.optionsPicked !== null ? (
                         item.optionsPicked.map(option => (
                           <MenuSection>
                             <BlockTitle>
@@ -318,21 +298,12 @@ const OrderModal: React.FunctionComponent<OrderReceivedProps> = ({order}) => {
                       ) : null
                     }
                   </MenuSection>
-
-
-
-
                 ))
-
               ) : null
             }
-
-
-
           </TotalAmount>
         </OrderReceivedContainer>
       </OrderReceivedWrapper>
-
     </Scrollbars>
   );
 };
